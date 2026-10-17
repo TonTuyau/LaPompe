@@ -54,8 +54,9 @@ server reads YouTube as them.
 - **storage**: to keep the extension's settings (the TonTuyau server's address, its API key, how often to send) and the
   server's last answer, in the extension's own storage.
 - **alarms**: to send the cookie every N minutes, as the user set.
-- **Host permission youtube.com**: to read the youtube.com cookies, and to add the "Add to TonTuyau" button next to
-  Subscribe on YouTube's video and channel pages.
+- **Host permission youtube.com**: to read the youtube.com cookies; to add the "Add to TonTuyau" button next to
+  Subscribe on YouTube's video and channel pages; and, when that button is clicked on a channel opened by its @handle,
+  to read that channel's page to find its id.
 - **Optional host permissions (any http/https address)**: each user hosts their own TonTuyau at their own address, which
   the extension can't know in advance. It asks for that one address only, when the user saves it in the settings; it
   never asks for any other site.
@@ -66,9 +67,9 @@ No. All the extension's code is in its package; it runs no code from anywhere el
 
 ## Chrome: data usage
 
-Tick only **Authentication information**: the youtube.com cookies, the user's YouTube sign-in. Nothing else is
-collected: the content script reads the current YouTube page's address only to know which video or channel its button
-is about, and sends that id only when the user clicks the button.
+Tick **Authentication information**: the youtube.com cookies, the user's YouTube sign-in. And **Website content**: the
+id of a video or channel, from YouTube's page, sent only when the user clicks "Add to TonTuyau". Nothing else is
+collected: no browsing history (nothing is sent as the user browses, only the page whose button is clicked).
 
 Certify all three: the data isn't sold to third parties; it isn't used or transferred for purposes unrelated to the
 single purpose; it isn't used to determine creditworthiness or for lending. It goes only to the server address the user
