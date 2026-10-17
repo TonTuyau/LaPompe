@@ -8,6 +8,8 @@ describe('manifest', () => {
     const firefox = manifest('firefox', '0.1.0')
     expect(firefox.background).toEqual({ scripts: ['background.js'] })
     expect(firefox.browser_specific_settings).toMatchObject({ gecko: { id: firefoxId } })
+    // Its identity on addons.mozilla.org: changing it makes another add-on.
+    expect(firefoxId).toBe('tontuyau@lapompe')
     expect(firefox.action).toMatchObject({
       theme_icons: expect.arrayContaining([
         { light: 'icons/lapompe-light-16.png', dark: 'icons/lapompe-16.png', size: 16 },

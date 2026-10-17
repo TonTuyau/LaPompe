@@ -10,8 +10,11 @@ export const browsers: Browser[] = ['chrome', 'firefox']
 /** The icon's sizes, as PNG (Chrome takes no SVG). */
 export const iconSizes = [16, 32, 48, 128] as const
 
-/** Firefox's id for LaPompe: never changes once published (the add-on's identity there). */
-export const firefoxId = 'lapompe@tontuyau'
+/**
+ * Firefox's id for LaPompe: never changes once published (the add-on's identity there). Not lapompe@tontuyau, LaPompe's
+ * first: Mozilla keeps a deleted add-on's id for good.
+ */
+export const firefoxId = 'tontuyau@lapompe'
 
 export function manifest(browser: Browser, version: string): Record<string, unknown> {
   const icons = Object.fromEntries(iconSizes.map((size) => [String(size), `icons/lapompe-${size}.png`]))
