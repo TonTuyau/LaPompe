@@ -142,5 +142,29 @@
   },
   "optionsNote": {
     "message": "Enregistrer demande au navigateur la permission d'atteindre cette adresse seulement (aucun autre site), et youtube.com pour son cookie. La clé reste dans le stockage de l'extension, jamais dans une page web."
+  },
+  "addVideo": {
+    "message": "Ajouter à TonTuyau"
+  },
+  "addChannel": {
+    "message": "Ajouter la chaîne à TonTuyau"
+  },
+  "adding": {
+    "message": "Ajout…"
+  },
+  "added": {
+    "message": "Ajoutée à TonTuyau"
+  },
+  "addFailed": {
+    "message": "Pas ajoutée : $1"
+  },
+  "addNeeds16": {
+    "message": "Il faut TonTuyau 1.6, qui télécharge les vidéos (le vôtre a $1)."
+  },
+  "addNotSetUp": {
+    "message": "Réglez d'abord LaPompe : ses réglages, depuis son bouton dans la barre d'outils."
+  },
+  "addVersionUnknown": {
+    "message": "LaPompe ne connaît pas encore la version de votre TonTuyau : testez la connexion dans ses réglages."
   }
 }

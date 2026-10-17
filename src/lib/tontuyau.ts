@@ -55,6 +55,19 @@ export async function sendCookie(
   return { cookie: body, version }
 }
 
+/**
+ * "Add to TonTuyau" (TonTuyau 1.6): queues a video for download, or subscribes TonTuyau to a channel. Provisional:
+ * TonTuyau 1.6 defines these endpoints (its PR B7); LaPompe calls them only once TonTuyau says 1.6 or later.
+ */
+export async function add(
+  settings: Settings,
+  page: { kind: 'video' | 'channel'; id: string },
+  fetchFn: typeof fetch = fetch,
+): Promise<void> {
+  const path = page.kind === 'video' ? 'videos' : 'channels'
+  await call<unknown>(settings, 'POST', `/api/extension/${path}/${encodeURIComponent(page.id)}`, {}, fetchFn)
+}
+
 async function call<T>(
   settings: Settings,
   method: string,
@@ -80,7 +93,9 @@ async function call<T>(
   }
 
   if (response.ok) {
-    return { body: (await response.json()) as T, version: response.headers.get(versionHeader) }
+    // A 202 or 204 may come without a body.
+    const text = await response.text()
+    return { body: (text === '' ? null : JSON.parse(text)) as T, version: response.headers.get(versionHeader) }
   }
 
   const detail = await problemDetail(response)

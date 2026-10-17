@@ -3,6 +3,7 @@
 // up for any of them). One send at a time: a second ask while one goes on gets the same answer.
 import { pumpOnce, type LastSend } from './pump'
 import { isSetUp, loadSettings } from './settings'
+import { add, TonTuyauError } from './tontuyau'
 
 export const alarmName = 'pump'
 
@@ -12,6 +13,14 @@ const firstDelayMinutes = 0.5
 export interface PumpMessage {
   type: 'pump'
 }
+
+/** From a YouTube page's button (TonTuyau 1.6): add this video or channel. */
+export interface AddMessage {
+  type: 'add'
+  page: { kind: 'video' | 'channel'; id: string }
+}
+
+export type AddAnswer = { ok: true } | { ok: false; detail: string }
 
 export function startBackground(ext: typeof chrome, fetchFn: typeof fetch = fetch): void {
   let running: Promise<LastSend> | null = null
@@ -46,12 +55,26 @@ export function startBackground(ext: typeof chrome, fetchFn: typeof fetch = fetc
       void pump()
     }
   })
+  const addPage = async (page: AddMessage['page']): Promise<AddAnswer> => {
+    try {
+      await add(await loadSettings(ext.storage.local), page, fetchFn)
+      return { ok: true }
+    } catch (error) {
+      if (!(error instanceof TonTuyauError)) throw error
+      return { ok: false, detail: error.detail }
+    }
+  }
+
   ext.runtime.onMessage.addListener((message: unknown, _sender, sendResponse) => {
-    if ((message as PumpMessage | undefined)?.type !== 'pump') {
+    const sent = message as PumpMessage | AddMessage | undefined
+    if (sent?.type === 'pump') {
+      void pump().then(sendResponse)
+    } else if (sent?.type === 'add') {
+      void addPage(sent.page).then(sendResponse)
+    } else {
       return false
     }
-    void pump().then(sendResponse)
-    // The answer comes later (sendResponse after the send).
+    // The answer comes later (sendResponse once TonTuyau answered).
     return true
   })
 }
