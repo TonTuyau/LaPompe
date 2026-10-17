@@ -47,10 +47,12 @@ export function manifest(browser: Browser, version: string): Record<string, unkn
         browser_specific_settings: {
           gecko: {
             id: firefoxId,
-            strict_min_version: '128.0',
+            // The first versions that know data_collection_permissions: 140 (an ESR) and, on Android, 142.
+            strict_min_version: '140.0',
             // It sends the browser's YouTube cookie (a sign-in) to the TonTuyau its user chose, nowhere else.
             data_collection_permissions: { required: ['authenticationInfo'] },
           },
+          gecko_android: { strict_min_version: '142.0' },
         },
       }
 }
