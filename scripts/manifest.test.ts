@@ -8,6 +8,11 @@ describe('manifest', () => {
     const firefox = manifest('firefox', '0.1.0')
     expect(firefox.background).toEqual({ scripts: ['background.js'] })
     expect(firefox.browser_specific_settings).toMatchObject({ gecko: { id: firefoxId } })
+    expect(firefox.action).toMatchObject({
+      theme_icons: expect.arrayContaining([
+        { light: 'icons/lapompe-light-16.png', dark: 'icons/lapompe-16.png', size: 16 },
+      ]),
+    })
   })
 
   it("asks for the YouTube cookie and its alarm, never every site: TonTuyau's address is asked for later", () => {

@@ -1,7 +1,7 @@
 // Builds LaPompe for each browser: dist/chrome and dist/firefox (load them unpacked), and a zip of each to publish.
 //   1. the popup and the settings page (Svelte, Vite), with public/ (the locales) copied beside them;
 //   2. the background and the content script, each one file (IIFE: neither can be an ES module everywhere);
-//   3. the icon, as PNG at each size;
+//   3. the icon (and its light variant, for Firefox's dark toolbars), as PNG at each size;
 //   4. per browser, everything above plus its own manifest.json, then its zip.
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
@@ -41,11 +41,13 @@ for (const [entry, name] of [
   })
 }
 
-const svg = readFileSync(join(root, 'icons/lapompe.svg'))
 mkdirSync(join(common, 'icons'), { recursive: true })
-for (const size of iconSizes) {
-  const png = new Resvg(svg, { fitTo: { mode: 'width', value: size } }).render().asPng()
-  writeFileSync(join(common, 'icons', `lapompe-${size}.png`), png)
+for (const icon of ['lapompe', 'lapompe-light']) {
+  const svg = readFileSync(join(root, 'icons', `${icon}.svg`))
+  for (const size of iconSizes) {
+    const png = new Resvg(svg, { fitTo: { mode: 'width', value: size } }).render().asPng()
+    writeFileSync(join(common, 'icons', `${icon}-${size}.png`), png)
+  }
 }
 
 for (const browser of browsers) {

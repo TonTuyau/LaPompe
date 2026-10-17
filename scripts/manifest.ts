@@ -34,6 +34,15 @@ export function manifest(browser: Browser, version: string): Record<string, unkn
     ? { ...common, background: { service_worker: 'background.js' }, minimum_chrome_version: '120' }
     : {
         ...common,
+        // A dark toolbar gets the light pump (Chrome has no such choice: the dark one everywhere).
+        action: {
+          ...common.action,
+          theme_icons: iconSizes.map((size) => ({
+            light: `icons/lapompe-light-${size}.png`,
+            dark: `icons/lapompe-${size}.png`,
+            size,
+          })),
+        },
         background: { scripts: ['background.js'] },
         browser_specific_settings: {
           gecko: {
