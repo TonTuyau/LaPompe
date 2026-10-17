@@ -1,6 +1,6 @@
 # LaPompe
 
-*LaPompe remplit TonTuyau.*
+_LaPompe remplit TonTuyau._
 
 [TonTuyau](https://github.com/TonTuyau/TonTuyau)'s browser extension, for Firefox and Chrome: it sends your YouTube
 cookie to TonTuyau, so TonTuyau reads YouTube signed in, and (with TonTuyau 1.6) adds "Add to TonTuyau" buttons to
@@ -23,8 +23,8 @@ are the same, to publish:
 
 `scripts/check.sh` lints, type-checks, tests and builds, as CI does on each pull request.
 
-| | |
-|---|---|
+|                       |                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------ |
 | `scripts/manifest.ts` | the manifest (MV3), one per browser: Chrome's background is a service worker, Firefox's a script |
-| `scripts/build.ts` | the pages (Svelte, Vite), the background and content script (one file each), the icons, the zips |
-| `public/_locales` | its words, English and French, as the browser |
+| `scripts/build.ts`    | the pages (Svelte, Vite), the background and content script (one file each), the icons, the zips |
+| `public/_locales`     | its words, English and French, as the browser                                                    |
