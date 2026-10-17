@@ -1,0 +1,65 @@
+name: Release
+
+# A version tag vX.Y.Z: the full checks on that tag's source, then a GitHub Release with what the add-on stores take:
+# the Chrome and Firefox zips, and the source package (Mozilla's reviewers rebuild it: docs/BUILD.md), with the
+# version's notes (docs/releases/X.Y.Z.md). Also by hand, for a tag that has no release yet (Actions → Release → Run
+# workflow, with the tag).
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The tag to release (vX.Y.Z), already pushed'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release ${{ inputs.tag || github.ref_name }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TAG }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: The tag names the package's version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          [ "$TAG" = "v$version" ] || { echo "The tag $TAG doesn't name the version $version." >&2; exit 1; }
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - run: scripts/check.sh
+
+      - name: The source package
+        run: git archive --format=zip --prefix="lapompe-$VERSION/" --output="dist/lapompe-$VERSION-source.zip" "$TAG"
+
+      - name: The GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes="docs/releases/$VERSION.md"
+          [ -f "$notes" ] || notes=/dev/null
+          gh release create "$TAG" \
+            --title "LaPompe $VERSION" \
+            --notes-file "$notes" \
+            --verify-tag \
+            "dist/lapompe-$VERSION-chrome.zip" \
+            "dist/lapompe-$VERSION-firefox.zip" \
+            "dist/lapompe-$VERSION-source.zip"

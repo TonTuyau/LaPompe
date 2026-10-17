@@ -30,6 +30,18 @@ save the settings too.
    once to let LaPompe reach that address and youtube.com), and Test the connection.
 3. Be signed in on youtube.com in this browser.
 
+## Privacy, license
+
+LaPompe sends your youtube.com cookies to the TonTuyau address you set, and nowhere else: see
+[PRIVACY.md](PRIVACY.md). It's free software under the [MIT license](LICENSE).
+
+## Releases
+
+Each version tag `vX.Y.Z` runs the full checks on its source, then publishes a
+[GitHub Release](https://github.com/TonTuyau/LaPompe/releases) with the Chrome and Firefox zips and the source package
+(`.github/workflows/release.yml`). What the add-on stores ask for is in [docs/store](docs/store/README.md);
+[docs/BUILD.md](docs/BUILD.md) says how to rebuild it from the source.
+
 ## Development
 
 Node 24 and pnpm (`corepack enable`), then:
