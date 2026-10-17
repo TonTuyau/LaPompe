@@ -1,12 +1,10 @@
 name: CI
 
-# Pull requests to main and the release branches, and version tags: lint, type-check, test, build both browsers'
-# zips (kept as the run's artifacts). Pushing a branch alone runs nothing (its pull request does).
+# Pull requests to main and the release branches: lint, type-check, test, build both browsers' zips (kept as the
+# run's artifacts). Pushing a branch alone runs nothing (its pull request does); a version tag runs release.yml.
 on:
   pull_request:
     branches: [main, 'release/**']
-  push:
-    tags: ['v*.*.*']
 
 permissions:
   contents: read
