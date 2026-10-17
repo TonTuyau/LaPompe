@@ -1,3 +1,4 @@
+import './pages/theme.css'
 import { mount } from 'svelte'
 import Popup from './pages/Popup.svelte'
 
