@@ -142,5 +142,29 @@
   },
   "optionsNote": {
     "message": "Saving asks the browser for leave to reach that address only (no other site), and youtube.com for its cookie. The key stays in the browser's extension storage, never in a web page."
+  },
+  "addVideo": {
+    "message": "Add to TonTuyau"
+  },
+  "addChannel": {
+    "message": "Add channel to TonTuyau"
+  },
+  "adding": {
+    "message": "Adding…"
+  },
+  "added": {
+    "message": "Added to TonTuyau"
+  },
+  "addFailed": {
+    "message": "Not added: $1"
+  },
+  "addNeeds16": {
+    "message": "Needs TonTuyau 1.6, which downloads videos (yours has $1)."
+  },
+  "addNotSetUp": {
+    "message": "Set LaPompe up first: its settings, from its toolbar button."
+  },
+  "addVersionUnknown": {
+    "message": "LaPompe doesn't know your TonTuyau's version yet: test the connection in its settings."
   }
 }
