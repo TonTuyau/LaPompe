@@ -8,11 +8,14 @@ const watchPage =
 
 let stop: (() => void) | null = null
 
-function open(url: string, body: string, fake: FakeExt) {
+const channelHeader =
+  '<yt-page-header-view-model><yt-flexible-actions-view-model><button>Subscribe</button></yt-flexible-actions-view-model></yt-page-header-view-model>'
+
+function open(url: string, body: string, fake: FakeExt, youTubeFetch?: typeof fetch) {
   ;(globalThis as { chrome?: typeof chrome }).chrome = fake.ext
   history.replaceState(null, '', url)
   document.body.innerHTML = body
-  stop = startContent(window, fake.ext)
+  stop = startContent(window, fake.ext, youTubeFetch)
 }
 
 const host = () => document.getElementById(hostId)
@@ -85,11 +88,58 @@ describe('the buttons on YouTube', () => {
   it('puts "Add channel to TonTuyau" on a channel page', async () => {
     open(
       '/channel/UCx7Lm2QpB0vK9sTq4aZ1wYc',
-      '<yt-page-header-view-model><yt-flexible-actions-view-model><button>Subscribe</button></yt-flexible-actions-view-model></yt-page-header-view-model>',
+      channelHeader,
       fakeExt({ settings, tontuyau: { version: '1.5.0', name: null } }),
     )
 
     await vi.waitFor(() => expect(shadowButton()).toHaveTextContent('Add channel to TonTuyau'))
     expect(host()?.parentElement?.tagName.toLowerCase()).toBe('yt-flexible-actions-view-model')
+  })
+
+  it('puts it on a channel opened by its @handle too, and adds that channel by the id its page says', async () => {
+    const fake = fakeExt({ settings, tontuyau: { version: '1.6.0', name: null } })
+    const tonTuyau = vi.fn(async () => new Response(null, { status: 202 }))
+    startBackground(fake.ext, tonTuyau)
+    const youTube = vi.fn(
+      async () =>
+        new Response('<link rel="canonical" href="https://www.youtube.com/channel/UCx7Lm2QpB0vK9sTq4aZ1wYc">'),
+    )
+    // The open page's head names another channel: YouTube's own navigation left it there.
+    document.head.innerHTML = '<link rel="canonical" href="https://www.youtube.com/channel/UCBR8-60-B28hp2BmDPdntcQ">'
+    open('/@underthecity/videos', channelHeader, fake, youTube)
+
+    await vi.waitFor(() => expect(shadowButton()).toBeEnabled())
+    expect(host()?.dataset.page).toBe('channel:/@underthecity')
+    expect(youTube).not.toHaveBeenCalled()
+    shadowButton()?.click()
+
+    await vi.waitFor(() => expect(shadowButton()).toHaveTextContent('Added to TonTuyau'))
+    expect(youTube).toHaveBeenCalledWith('https://www.youtube.com/@underthecity')
+    expect(tonTuyau).toHaveBeenCalledWith(
+      'https://tontuyau.example.net/api/extension/channels/UCx7Lm2QpB0vK9sTq4aZ1wYc',
+      expect.objectContaining({ method: 'POST' }),
+    )
+    document.head.innerHTML = ''
+  })
+
+  it("says so when YouTube's page doesn't name the channel, and adds nothing", async () => {
+    const fake = fakeExt({ settings, tontuyau: { version: '1.6.0', name: null } })
+    const tonTuyau = vi.fn(async () => new Response(null, { status: 202 }))
+    startBackground(fake.ext, tonTuyau)
+    open(
+      '/@underthecity',
+      channelHeader,
+      fake,
+      vi.fn(async () => new Response('<title>Before you continue</title>')),
+    )
+
+    await vi.waitFor(() => expect(shadowButton()).toBeEnabled())
+    shadowButton()?.click()
+
+    await vi.waitFor(() =>
+      expect(shadowButton()?.title).toBe("Not added: YouTube's page didn't say which channel this is."),
+    )
+    expect(shadowButton()).toBeEnabled()
+    expect(tonTuyau).not.toHaveBeenCalled()
   })
 })

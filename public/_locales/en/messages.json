@@ -166,5 +166,8 @@
   },
   "addVersionUnknown": {
     "message": "LaPompe doesn't know your TonTuyau's version yet: test the connection in its settings."
+  },
+  "channelIdUnknown": {
+    "message": "YouTube's page didn't say which channel this is."
   }
 }
