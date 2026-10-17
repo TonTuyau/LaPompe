@@ -6,7 +6,7 @@ import { t } from './i18n'
 import { loadKnownTonTuyau, tonTuyauKey } from './pump'
 import { isSetUp, loadSettings } from './settings'
 import { addingSince, atLeast } from './version'
-import { anchorFor, pageKind, type PageKind } from './youtubePage'
+import { anchorFor, channelIdAt, pageKind, type PageKind } from './youtubePage'
 
 /** The button's host element: its id, and which page it's for (data-page="video:abc…"). */
 export const hostId = 'lapompe-add'
@@ -16,7 +16,15 @@ interface Ability {
   why: string
 }
 
-export function startContent(window: Window & typeof globalThis, ext: typeof chrome): () => void {
+/**
+ * fetchFn reads a channel's page on youtube.com (its id, for an @handle) as the page itself would: with its cookies
+ * (Firefox: the page's content.fetch, not the extension's).
+ */
+export function startContent(
+  window: Window & typeof globalThis,
+  ext: typeof chrome,
+  fetchFn: typeof fetch = window.fetch.bind(window),
+): () => void {
   const document = window.document
   let ability: Ability = { enabled: false, why: '' }
 
@@ -32,9 +40,9 @@ export function startContent(window: Window & typeof globalThis, ext: typeof chr
   }
 
   const render = () => {
-    const page = pageKind(window.location, document)
+    const page = pageKind(window.location)
     const current = document.getElementById(hostId)
-    const key = page ? `${page.kind}:${page.id}` : null
+    const key = page ? pageKey(page) : null
     if (!page) {
       current?.remove()
       return
@@ -50,7 +58,7 @@ export function startContent(window: Window & typeof globalThis, ext: typeof chr
       if (placed) return
     }
     current?.remove()
-    const host = button(document, page, ability, ext)
+    const host = button(document, page, ability, () => adding(page, ext, fetchFn))
     if (anchor.place === 'after') {
       anchor.element.after(host)
     } else {
@@ -86,11 +94,26 @@ export function startContent(window: Window & typeof globalThis, ext: typeof chr
   }
 }
 
+const pageKey = (page: PageKind): string => `${page.kind}:${page.id === null ? page.path : page.id}`
+
+/** Adds this page's video or channel (the background asks TonTuyau); a channel by its @handle, once its id is read. */
+async function adding(page: PageKind, ext: typeof chrome, fetchFn: typeof fetch): Promise<AddAnswer> {
+  let id: string | null
+  try {
+    id = page.id === null ? await channelIdAt(page.path, fetchFn) : page.id
+  } catch (error) {
+    return { ok: false, detail: error instanceof Error ? error.message : String(error) }
+  }
+  if (id === null) return { ok: false, detail: t('channelIdUnknown') }
+  const message: AddMessage = { type: 'add', page: { kind: page.kind, id } }
+  return (await ext.runtime.sendMessage(message)) as AddAnswer
+}
+
 /** The button, in its own shadow root (YouTube's styles don't reach it, its don't reach YouTube). */
-function button(document: Document, page: PageKind, ability: Ability, ext: typeof chrome): HTMLElement {
+function button(document: Document, page: PageKind, ability: Ability, add: () => Promise<AddAnswer>): HTMLElement {
   const host = document.createElement('span')
   host.id = hostId
-  host.dataset.page = `${page.kind}:${page.id}`
+  host.dataset.page = pageKey(page)
   host.dataset.enabled = String(ability.enabled)
   const root = host.attachShadow({ mode: 'open' })
   const style = document.createElement('style')
@@ -105,8 +128,7 @@ function button(document: Document, page: PageKind, ability: Ability, ext: typeo
   button.addEventListener('click', () => {
     button.disabled = true
     label.textContent = t('adding')
-    const message: AddMessage = { type: 'add', page }
-    void (ext.runtime.sendMessage(message) as Promise<AddAnswer>).then((answer) => {
+    void add().then((answer) => {
       label.textContent = answer.ok ? t('added') : page.kind === 'video' ? t('addVideo') : t('addChannel')
       button.title = answer.ok ? '' : t('addFailed', answer.detail)
       button.disabled = answer.ok
