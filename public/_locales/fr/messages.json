@@ -1,0 +1,7 @@
+{
+  "name": { "message": "LaPompe", "description": "The extension's name." },
+  "description": {
+    "message": "L'extension de TonTuyau : envoie votre cookie YouTube à votre TonTuyau, et ajoute des boutons « Ajouter à TonTuyau » sur YouTube.",
+    "description": "The extension's description, in the browser's add-ons list."
+  }
+}

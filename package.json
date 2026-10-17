@@ -1,0 +1,44 @@
+{
+  "name": "lapompe",
+  "private": true,
+  "version": "0.1.0",
+  "description": "TonTuyau's browser extension: LaPompe remplit TonTuyau.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "check": "svelte-check --tsconfig ./tsconfig.app.json --fail-on-warnings && tsc -p tsconfig.node.json",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/svelte": "^5.4.2",
+    "@testing-library/user-event": "^14.6.7",
+    "@tsconfig/svelte": "^5.0.8",
+    "@types/chrome": "^0.1.1",
+    "@types/node": "^24.13.3",
+    "eslint": "^10.11.0",
+    "eslint-plugin-svelte": "^3.23.0",
+    "fflate": "^0.8.2",
+    "globals": "^17.12.0",
+    "jsdom": "^30.1.1",
+    "prettier": "^3.9.9",
+    "prettier-plugin-svelte": "^4.1.1",
+    "svelte": "^5.57.0",
+    "svelte-check": "^4.7.6",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.71.0",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.3"
+  },
+  "license": "MIT",
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": ">=24"
+  }
+}

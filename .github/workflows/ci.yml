@@ -1,0 +1,35 @@
+name: CI
+
+# Pull requests to main and the release branches, and version tags: lint, type-check, test, build both browsers'
+# zips (kept as the run's artifacts). Pushing a branch alone runs nothing (its pull request does).
+on:
+  pull_request:
+    branches: [main, 'release/**']
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Checks (scripts/check.sh)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: scripts/check.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lapompe-zips
+          path: dist/*.zip
+          if-no-files-found: error
