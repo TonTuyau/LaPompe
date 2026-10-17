@@ -1,7 +1,146 @@
 {
-  "name": { "message": "LaPompe", "description": "The extension's name." },
+  "name": {
+    "message": "LaPompe"
+  },
   "description": {
-    "message": "TonTuyau's browser extension: sends your YouTube cookie to your TonTuyau, and adds \"Add to TonTuyau\" buttons to YouTube.",
-    "description": "The extension's description, in the browser's add-ons list."
+    "message": "TonTuyau's browser extension: sends your YouTube cookie to your TonTuyau, and adds \"Add to TonTuyau\" buttons to YouTube."
+  },
+  "tagline": {
+    "message": "remplit TonTuyau"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "popupTonTuyau": {
+    "message": "TonTuyau"
+  },
+  "popupAs": {
+    "message": "As"
+  },
+  "popupCookie": {
+    "message": "Cookie"
+  },
+  "popupNext": {
+    "message": "Next"
+  },
+  "cookieWorks": {
+    "message": "Works"
+  },
+  "cookieRefused": {
+    "message": "Refused"
+  },
+  "cookieUnchecked": {
+    "message": "Not checked"
+  },
+  "sentAgo": {
+    "message": "sent $1"
+  },
+  "neverSent": {
+    "message": "never sent"
+  },
+  "nextIn": {
+    "message": "$1 (every $2 min)"
+  },
+  "sendNow": {
+    "message": "Send the cookie now"
+  },
+  "sending": {
+    "message": "Sending…"
+  },
+  "sendHint": {
+    "message": "Only the youtube.com cookies are sent. TonTuyau checks them at once by reading your Liked videos."
+  },
+  "notSetUp": {
+    "message": "Not set up yet: give it your TonTuyau's address and a browser-extension API key."
+  },
+  "openSettings": {
+    "message": "Open the settings"
+  },
+  "failureNoCookie": {
+    "message": "No YouTube cookie in this browser: sign in on youtube.com first, then send it again."
+  },
+  "failureUnreachable": {
+    "message": "TonTuyau can't be reached: $1"
+  },
+  "failureKeyRefused": {
+    "message": "TonTuyau refused the API key (unknown or disabled): check it in the settings."
+  },
+  "failureKeyNotAllowed": {
+    "message": "This API key isn't a browser-extension key: make one of that kind in TonTuyau."
+  },
+  "failureRefused": {
+    "message": "TonTuyau refused the cookie: $1"
+  },
+  "failureUnexpected": {
+    "message": "TonTuyau answered something unexpected: $1"
+  },
+  "cookieRefusedHint": {
+    "message": "YouTube refused it: you're signed out of YouTube in this browser, or your session expired. Sign in on youtube.com, then send it again."
+  },
+  "cookieUncheckedHint": {
+    "message": "YouTube couldn't tell (a bot check, the network): TonTuyau checks it again later."
+  },
+  "footVersion": {
+    "message": "LaPompe $1"
+  },
+  "optionsTitle": {
+    "message": "LaPompe settings"
+  },
+  "urlLabel": {
+    "message": "TonTuyau's address"
+  },
+  "urlHint": {
+    "message": "The address you open TonTuyau at. The browser asks once to let LaPompe reach it."
+  },
+  "keyLabel": {
+    "message": "API key"
+  },
+  "keyHint": {
+    "message": "Made in TonTuyau: Admin → API keys → New key, kind \"Browser extension\". Shown once there: paste it here."
+  },
+  "everyLabel": {
+    "message": "Send the YouTube cookie every"
+  },
+  "minutes": {
+    "message": "minutes"
+  },
+  "everyHint": {
+    "message": "$1 or more. YouTube renews its cookies while you browse: a short interval keeps TonTuyau's copy working."
+  },
+  "save": {
+    "message": "Save"
+  },
+  "saved": {
+    "message": "Saved."
+  },
+  "test": {
+    "message": "Test the connection"
+  },
+  "testing": {
+    "message": "Testing…"
+  },
+  "connected": {
+    "message": "Connected: TonTuyau $1, as \"$2\"."
+  },
+  "permissionRefused": {
+    "message": "Without your leave, LaPompe can't reach $1."
+  },
+  "urlMissing": {
+    "message": "Give TonTuyau's address."
+  },
+  "urlNotAnAddress": {
+    "message": "An address like https://tontuyau.example.net."
+  },
+  "keyMissing": {
+    "message": "Paste the API key."
+  },
+  "keyNotAKey": {
+    "message": "A TonTuyau API key starts with tt_."
+  },
+  "everyTooShort": {
+    "message": "A whole number, $1 or more."
+  },
+  "optionsNote": {
+    "message": "Saving asks the browser for leave to reach that address only (no other site), and youtube.com for its cookie. The key stays in the browser's extension storage, never in a web page."
   }
 }

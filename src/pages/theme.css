@@ -1,0 +1,96 @@
+/* TonTuyau's colours and type (its front's youtube.css), light and dark as the browser. */
+:root {
+  color-scheme: light dark;
+  --bg: light-dark(#ffffff, #0f0f0f);
+  --surface: light-dark(#f2f2f2, #272727);
+  --text: light-dark(#0f0f0f, #f1f1f1);
+  --text-2: light-dark(#606060, #aaaaaa);
+  --border: light-dark(#d3d3d3, #303030);
+  --divider: light-dark(#e5e5e5, #3f3f3f);
+  --input: light-dark(#ffffff, #121212);
+  --brand: light-dark(#0f8b8d, #2bb3b5);
+  --link: light-dark(#065fd4, #3ea6ff);
+  --button: light-dark(#0f0f0f, #f1f1f1);
+  --on-button: light-dark(#ffffff, #0f0f0f);
+  --ok: light-dark(#137333, #81c995);
+  --ok-bg: light-dark(#e6f4ea, #12301f);
+  --warn-bg: light-dark(#fff3d6, #3d2e00);
+  --on-warn: light-dark(#7a4f00, #ffd36a);
+  --error: light-dark(#cc0000, #ff6b6b);
+  --error-bg: light-dark(#fce8e6, #4a1c1c);
+  --focus: light-dark(#1c62b9, #3ea6ff);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    400 14px/1.45 Roboto,
+    Arial,
+    system-ui,
+    sans-serif;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--button);
+  color: var(--on-button);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.button.tonal {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.alert {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.alert.warn {
+  background: var(--warn-bg);
+  color: var(--on-warn);
+}
+
+.alert.error {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 12px;
+}

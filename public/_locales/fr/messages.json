@@ -1,7 +1,146 @@
 {
-  "name": { "message": "LaPompe", "description": "The extension's name." },
+  "name": {
+    "message": "LaPompe"
+  },
   "description": {
-    "message": "L'extension de TonTuyau : envoie votre cookie YouTube à votre TonTuyau, et ajoute des boutons « Ajouter à TonTuyau » sur YouTube.",
-    "description": "The extension's description, in the browser's add-ons list."
+    "message": "L'extension de TonTuyau : envoie votre cookie YouTube à votre TonTuyau, et ajoute des boutons « Ajouter à TonTuyau » sur YouTube."
+  },
+  "tagline": {
+    "message": "remplit TonTuyau"
+  },
+  "settings": {
+    "message": "Réglages"
+  },
+  "popupTonTuyau": {
+    "message": "TonTuyau"
+  },
+  "popupAs": {
+    "message": "En tant que"
+  },
+  "popupCookie": {
+    "message": "Cookie"
+  },
+  "popupNext": {
+    "message": "Prochain"
+  },
+  "cookieWorks": {
+    "message": "Fonctionne"
+  },
+  "cookieRefused": {
+    "message": "Refusé"
+  },
+  "cookieUnchecked": {
+    "message": "Pas vérifié"
+  },
+  "sentAgo": {
+    "message": "envoyé $1"
+  },
+  "neverSent": {
+    "message": "jamais envoyé"
+  },
+  "nextIn": {
+    "message": "$1 (toutes les $2 min)"
+  },
+  "sendNow": {
+    "message": "Envoyer le cookie maintenant"
+  },
+  "sending": {
+    "message": "Envoi…"
+  },
+  "sendHint": {
+    "message": "Seuls les cookies de youtube.com sont envoyés. TonTuyau les vérifie aussitôt en lisant vos vidéos « J'aime »."
+  },
+  "notSetUp": {
+    "message": "Pas encore réglée : donnez-lui l'adresse de votre TonTuyau et une clé d'API d'extension."
+  },
+  "openSettings": {
+    "message": "Ouvrir les réglages"
+  },
+  "failureNoCookie": {
+    "message": "Aucun cookie YouTube dans ce navigateur : connectez-vous d'abord sur youtube.com, puis envoyez-le à nouveau."
+  },
+  "failureUnreachable": {
+    "message": "TonTuyau est injoignable : $1"
+  },
+  "failureKeyRefused": {
+    "message": "TonTuyau a refusé la clé d'API (inconnue ou désactivée) : vérifiez-la dans les réglages."
+  },
+  "failureKeyNotAllowed": {
+    "message": "Cette clé d'API n'est pas une clé d'extension : créez-en une de ce type dans TonTuyau."
+  },
+  "failureRefused": {
+    "message": "TonTuyau a refusé le cookie : $1"
+  },
+  "failureUnexpected": {
+    "message": "TonTuyau a répondu quelque chose d'inattendu : $1"
+  },
+  "cookieRefusedHint": {
+    "message": "YouTube l'a refusé : vous êtes déconnecté de YouTube dans ce navigateur, ou votre session a expiré. Connectez-vous sur youtube.com, puis envoyez-le à nouveau."
+  },
+  "cookieUncheckedHint": {
+    "message": "YouTube n'a pas pu le dire (une vérification anti-robot, le réseau) : TonTuyau le vérifie à nouveau plus tard."
+  },
+  "footVersion": {
+    "message": "LaPompe $1"
+  },
+  "optionsTitle": {
+    "message": "Réglages de LaPompe"
+  },
+  "urlLabel": {
+    "message": "Adresse de TonTuyau"
+  },
+  "urlHint": {
+    "message": "L'adresse où vous ouvrez TonTuyau. Le navigateur demande une fois de laisser LaPompe l'atteindre."
+  },
+  "keyLabel": {
+    "message": "Clé d'API"
+  },
+  "keyHint": {
+    "message": "Créée dans TonTuyau : Admin → Clés d'API → Nouvelle clé, type « Extension de navigateur ». Affichée une seule fois là-bas : collez-la ici."
+  },
+  "everyLabel": {
+    "message": "Envoyer le cookie YouTube toutes les"
+  },
+  "minutes": {
+    "message": "minutes"
+  },
+  "everyHint": {
+    "message": "$1 ou plus. YouTube renouvelle ses cookies pendant que vous naviguez : un intervalle court garde la copie de TonTuyau valable."
+  },
+  "save": {
+    "message": "Enregistrer"
+  },
+  "saved": {
+    "message": "Enregistré."
+  },
+  "test": {
+    "message": "Tester la connexion"
+  },
+  "testing": {
+    "message": "Test…"
+  },
+  "connected": {
+    "message": "Connecté : TonTuyau $1, en tant que « $2 »."
+  },
+  "permissionRefused": {
+    "message": "Sans votre accord, LaPompe ne peut pas atteindre $1."
+  },
+  "urlMissing": {
+    "message": "Donnez l'adresse de TonTuyau."
+  },
+  "urlNotAnAddress": {
+    "message": "Une adresse comme https://tontuyau.example.net."
+  },
+  "keyMissing": {
+    "message": "Collez la clé d'API."
+  },
+  "keyNotAKey": {
+    "message": "Une clé d'API de TonTuyau commence par tt_."
+  },
+  "everyTooShort": {
+    "message": "Un nombre entier, $1 ou plus."
+  },
+  "optionsNote": {
+    "message": "Enregistrer demande au navigateur la permission d'atteindre cette adresse seulement (aucun autre site), et youtube.com pour son cookie. La clé reste dans le stockage de l'extension, jamais dans une page web."
   }
 }

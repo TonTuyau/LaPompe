@@ -1,3 +1,5 @@
+import english from '../../public/_locales/en/messages.json'
+
 // Small fakes of the WebExtension API, for tests: storage that tells its listeners, events that can be fired, alarms
 // that can be rung, messages, cookies.
 
@@ -101,7 +103,16 @@ export function fakeExt(initial: Record<string, unknown> = {}): FakeExt {
       getManifest: () => ({ version: '0.1.0' }),
     },
     cookies: { getAll: async () => structuredClone(cookies) },
+    permissions: { request: vi.fn(async () => true) },
+    i18n: { getMessage: message, getUILanguage: () => 'en' },
   }
+  Object.assign(ext.runtime, {
+    sendMessage: (sent: unknown) =>
+      new Promise((resolve) => {
+        events.onMessage.fire(sent, {}, resolve)
+      }),
+    openOptionsPage: vi.fn(async () => {}),
+  })
   return {
     ext: ext as unknown as typeof chrome,
     alarms,
@@ -113,6 +124,12 @@ export function fakeExt(initial: Record<string, unknown> = {}): FakeExt {
         events.onMessage.fire(message, {}, resolve)
       }),
   }
+}
+
+/** chrome.i18n.getMessage on the English locale: $1, $2… replaced by the values given. */
+export function message(key: string, values: string[] = []): string {
+  const entry = (english as Record<string, { message: string } | undefined>)[key]
+  return entry ? entry.message.replace(/\$(\d)/g, (_, n: string) => values[Number(n) - 1] ?? '') : ''
 }
 
 /** A youtube.com cookie as the browser gives it. */
