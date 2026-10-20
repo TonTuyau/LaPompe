@@ -29,7 +29,8 @@ GitHub → the repository → **Settings → Environments → New environment**,
 
 - **Required reviewers:** yourself (leave **Prevent self-review** unticked, or nobody can approve your own tags);
 - **Deployment branches and tags:** **Selected branches and tags** → **Add deployment branch or tag rule** → type
-  **Tag**, pattern `v*`;
+  **Tag**, pattern `v*`; and a second rule, type **Branch**, `main` (for the credentials check below, run from `main`:
+  it still waits for your approval);
 - **Environment secrets:** the five below.
 
 ### Firefox: an AMO API key
@@ -63,6 +64,14 @@ forbids keys: use a project outside it.
 
 ## Checking it without publishing
 
-`node scripts/publish-store.ts <firefox|chrome> --dry-run`, with the variables above set and the zips built
+**Actions → Store credentials → Run workflow** (from `main`), then approve it as a release: each store's job signs in
+with the secrets and reads LaPompe's version there (AMO: the API key's account and the add-on's current version;
+Chrome: the service account's token and the version the publisher sees), and changes nothing. A wrong secret fails
+its job, saying what the store answered.
+
+Locally:
+
+`node scripts/publish-store.ts <firefox|chrome> --check` does the same with the variables above set;
+`node scripts/publish-store.ts <firefox|chrome> --dry-run`, with them set and the zips built
 (`pnpm run build`; the source package: `git archive --format=zip --prefix=lapompe-X.Y.Z/ --output=dist/lapompe-X.Y.Z-source.zip HEAD`),
 checks the files and that each credential is there (a service account's key must read as one), and sends nothing.

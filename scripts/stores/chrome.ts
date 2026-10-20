@@ -39,14 +39,9 @@ interface PublishAnswer {
 
 const inProgress = (state: string | undefined) => state === 'IN_PROGRESS' || state === 'UPLOAD_IN_PROGRESS'
 
-/** Uploads the zip and submits it; returns the store's state for it (e.g. PENDING_REVIEW). */
-export async function publishToChrome(
-  release: ChromeRelease,
-  fetchFn: Fetch = fetch,
-  wait: Sleep = sleep,
-  log: Log = console.log,
-): Promise<string> {
-  const key = JSON.parse(release.serviceAccountKey) as ServiceAccountKey
+/** The service account's access token: its key signs a JWT, exchanged at Google. */
+async function accessToken(serviceAccountKey: string, fetchFn: Fetch): Promise<string> {
+  const key = JSON.parse(serviceAccountKey) as ServiceAccountKey
   const tokenUri = key.token_uri ?? 'https://oauth2.googleapis.com/token'
   const now = Math.floor(Date.now() / 1000)
   const assertion = rs256(
@@ -61,7 +56,37 @@ export async function publishToChrome(
     }),
     'Google token',
   )
-  const auth = `Bearer ${token.access_token}`
+  return token.access_token
+}
+
+/**
+ * Checks the credentials without changing anything (`--check`): the service account's token, and the item's state
+ * as the publisher sees it (its published version).
+ */
+export async function checkChrome(
+  release: Omit<ChromeRelease, 'zip'>,
+  fetchFn: Fetch = fetch,
+  log: Log = console.log,
+): Promise<string> {
+  const auth = `Bearer ${await accessToken(release.serviceAccountKey, fetchFn)}`
+  const item = `publishers/${encodeURIComponent(release.publisherId)}/items/${encodeURIComponent(release.extensionId)}`
+  const status = await answer<{ publishedItemRevisionStatus?: { distributionChannels?: { crxVersion?: string }[] } }>(
+    await fetchFn(`${cwsApi}/v2/${item}:fetchStatus`, { headers: { Authorization: auth } }),
+    'Chrome Web Store status',
+  )
+  const version = status.publishedItemRevisionStatus?.distributionChannels?.[0]?.crxVersion ?? 'none yet'
+  log(`Chrome Web Store: signed in, the publisher sees its item at ${version}.`)
+  return version
+}
+
+/** Uploads the zip and submits it; returns the store's state for it (e.g. PENDING_REVIEW). */
+export async function publishToChrome(
+  release: ChromeRelease,
+  fetchFn: Fetch = fetch,
+  wait: Sleep = sleep,
+  log: Log = console.log,
+): Promise<string> {
+  const auth = `Bearer ${await accessToken(release.serviceAccountKey, fetchFn)}`
   const item = `publishers/${encodeURIComponent(release.publisherId)}/items/${encodeURIComponent(release.extensionId)}`
 
   const uploaded = await answer<UploadAnswer>(

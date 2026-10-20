@@ -34,6 +34,34 @@ interface Version {
   version: string
 }
 
+/**
+ * Checks the credentials without changing anything (`--check`): the API key's account, and the add-on's version on
+ * AMO as that account sees it.
+ */
+export async function checkAmo(
+  release: Pick<AmoRelease, 'issuer' | 'secret' | 'addonId'>,
+  fetchFn: Fetch = fetch,
+  log: Log = console.log,
+): Promise<string> {
+  const auth = () => {
+    const now = Math.floor(Date.now() / 1000)
+    return `JWT ${hs256({ iss: release.issuer, jti: randomUUID(), iat: now, exp: now + 60 }, release.secret)}`
+  }
+  const account = await answer<{ username?: string; name?: string }>(
+    await fetchFn(`${amoApi}/accounts/profile/`, { headers: { Authorization: auth() } }),
+    'AMO account',
+  )
+  const addon = await answer<{ current_version?: { version?: string } | null }>(
+    await fetchFn(`${amoApi}/addons/addon/${encodeURIComponent(release.addonId)}/`, {
+      headers: { Authorization: auth() },
+    }),
+    'AMO add-on',
+  )
+  const version = addon.current_version?.version ?? 'none yet'
+  log(`AMO: signed in as ${account.name || account.username || '?'}; ${release.addonId} is at ${version}.`)
+  return version
+}
+
 /** Uploads, validates and submits the version. */
 export async function publishToAmo(
   release: AmoRelease,

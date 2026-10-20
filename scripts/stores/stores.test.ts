@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { createHmac, createVerify, generateKeyPairSync } from 'node:crypto'
-import { amoApi, publishToAmo, type AmoRelease } from './amo.ts'
-import { cwsApi, cwsScope, publishToChrome, type ChromeRelease } from './chrome.ts'
+import { amoApi, checkAmo, publishToAmo, type AmoRelease } from './amo.ts'
+import { checkChrome, cwsApi, cwsScope, publishToChrome, type ChromeRelease } from './chrome.ts'
 
 interface Call {
   url: string
@@ -99,6 +99,20 @@ describe('Firefox (AMO)', () => {
     expect(calls).toHaveLength(2)
   })
 
+  it('checks the credentials without uploading: the account, and the version AMO has', async () => {
+    const { calls, fetchFn } = store([
+      [200, { username: 'eclegv', name: 'Eclegv' }],
+      [200, { current_version: { version: '0.1.4' } }],
+    ])
+
+    expect(await checkAmo(release, fetchFn, quiet)).toBe('0.1.4')
+    expect(calls.map((call) => `${call.method} ${call.url}`)).toEqual([
+      `GET ${amoApi}/accounts/profile/`,
+      `GET ${amoApi}/addons/addon/tontuyau%40lapompe/`,
+    ])
+    expect(calls.every((call) => call.headers.authorization?.startsWith('JWT '))).toBe(true)
+  })
+
   it('says what AMO answered on an error, never the secret', async () => {
     const { fetchFn } = store([[401, { detail: 'Incorrect authentication credentials.' }]])
 
@@ -156,6 +170,19 @@ describe('Chrome (Chrome Web Store)', () => {
     })
     expect(calls[1]?.headers).toMatchObject({ authorization: 'Bearer token-1', 'content-type': 'application/zip' })
     expect(JSON.parse(String(calls[4]?.body))).toEqual({ publishType: 'DEFAULT_PUBLISH' })
+  })
+
+  it('checks the credentials without uploading: the token, and the version the publisher sees', async () => {
+    const { calls, fetchFn } = store([
+      [200, { access_token: 'token-1' }],
+      [200, { publishedItemRevisionStatus: { state: 'PUBLISHED', distributionChannels: [{ crxVersion: '0.1.4' }] } }],
+    ])
+
+    expect(await checkChrome(release, fetchFn, quiet)).toBe('0.1.4')
+    expect(calls.map((call) => `${call.method} ${call.url}`)).toEqual([
+      'POST https://oauth2.googleapis.com/token',
+      `GET ${item}:fetchStatus`,
+    ])
   })
 
   it("doesn't submit an upload the store didn't take", async () => {
