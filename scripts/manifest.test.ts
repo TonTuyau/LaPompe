@@ -8,6 +8,10 @@ describe('manifest', () => {
     const firefox = manifest('firefox', '0.1.0')
     expect(firefox.background).toEqual({ scripts: ['background.js'] })
     expect(firefox.browser_specific_settings).toMatchObject({ gecko: { id: firefoxId } })
+    // Declared to Firefox: the sign-in, and the YouTube pages opened (their ids go to TonTuyau, 0.2.0).
+    expect(firefox.browser_specific_settings).toMatchObject({
+      gecko: { data_collection_permissions: { required: ['authenticationInfo', 'browsingActivity'] } },
+    })
     // Its identity on addons.mozilla.org: changing it makes another add-on.
     expect(firefoxId).toBe('tontuyau@lapompe')
     expect(firefox.action).toMatchObject({

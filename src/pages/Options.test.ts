@@ -99,6 +99,7 @@ describe('Options', () => {
     expect(await loadKnownTonTuyau(fake.ext.storage.local)).toEqual({
       version: '1.5.0',
       name: 'Firefox, laptop (API key)',
+      canAdd: false,
     })
   })
 

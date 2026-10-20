@@ -152,20 +152,29 @@
   "adding": {
     "message": "Adding…"
   },
-  "added": {
-    "message": "Added to TonTuyau"
-  },
   "addFailed": {
     "message": "Not added: $1"
   },
-  "addNeeds16": {
-    "message": "Needs TonTuyau 1.6, which downloads videos (yours has $1)."
+  "addNeedsAdding": {
+    "message": "Needs a TonTuyau that downloads videos (2.0 or later; yours has $1)."
+  },
+  "waitingInTonTuyau": {
+    "message": "Waiting in TonTuyau"
+  },
+  "waitingHint": {
+    "message": "In TonTuyau's queue: it's downloaded when its turn comes."
+  },
+  "videoInTonTuyau": {
+    "message": "In TonTuyau"
+  },
+  "channelInTonTuyau": {
+    "message": "Subscribed in TonTuyau"
   },
   "addNotSetUp": {
     "message": "Set LaPompe up first: its settings, from its toolbar button."
   },
   "addVersionUnknown": {
-    "message": "LaPompe doesn't know your TonTuyau's version yet: test the connection in its settings."
+    "message": "LaPompe doesn't know yet whether your TonTuyau can add: test the connection in its settings."
   },
   "channelIdUnknown": {
     "message": "YouTube's page didn't say which channel this is."

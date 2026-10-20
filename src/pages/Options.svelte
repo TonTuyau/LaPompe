@@ -5,7 +5,7 @@
   import Logo from '../components/Logo.svelte'
   import { ext } from '../lib/ext'
   import { t } from '../lib/i18n'
-  import { remember } from '../lib/pump'
+  import { learnedFrom, remember } from '../lib/pump'
   import {
     checkSettings,
     defaultSettings,
@@ -77,7 +77,7 @@
         return
       }
       const connection = await connect(asked.settings)
-      await remember(ext.storage.local, connection)
+      await remember(ext.storage.local, learnedFrom(connection))
       result = { text: t('connected', connection.version, connection.name), ok: true }
     } catch (error) {
       if (!(error instanceof TonTuyauError)) throw error

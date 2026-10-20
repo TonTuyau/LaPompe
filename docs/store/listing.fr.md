@@ -8,8 +8,8 @@ LaPompe
 
 ## Résumé (Firefox : 250 caractères au plus ; Chrome prend la description du manifeste, 132 au plus)
 
-Envoie votre connexion YouTube à votre propre serveur TonTuyau, pour qu'il lise YouTube en votre nom ; avec TonTuyau
-1.6, ajoute des boutons « Ajouter à TonTuyau » sur YouTube.
+Envoie votre connexion YouTube à votre propre serveur TonTuyau, pour qu'il lise YouTube en votre nom, et ajoute des
+boutons « Ajouter à TonTuyau » sur les pages de vidéo et de chaîne de YouTube.
 
 ## Description
 
@@ -24,13 +24,15 @@ Ce qu'elle fait :
   ses cookies pendant que vous naviguez : les envoyer souvent garde la copie de TonTuyau valable.
 - Montre, dans sa fenêtre, ce que votre TonTuyau a répondu : si YouTube a accepté le cookie, quand il a été envoyé,
   quand il part ensuite.
-- Ajoute « Ajouter à TonTuyau » à côté de S'abonner sur les pages de vidéo et de chaîne de YouTube. Il reste désactivé
-  tant que votre TonTuyau n'est pas en 1.6 ou plus, la version qui télécharge.
+- Ajoute « Ajouter à TonTuyau » à côté de S'abonner sur les pages de vidéo et de chaîne de YouTube : un clic, et votre
+  TonTuyau télécharge la vidéo, ou s'abonne à la chaîne. Il dit quand votre TonTuyau l'a déjà (« Dans TonTuyau ») ou la
+  télécharge (« En attente dans TonTuyau »). Il faut TonTuyau 2.0 ou plus, la version qui télécharge.
 
 Ce qu'il faut : un serveur TonTuyau (1.5 ou plus) et une clé d'API de type « Extension de navigateur » créée dedans.
 
-Vie privée : LaPompe n'envoie que vos cookies de youtube.com, et seulement à l'adresse de TonTuyau que vous réglez.
-Aucun autre site, aucun pistage, aucun serveur à elle. Son code est ouvert (MIT) : https://github.com/TonTuyau/LaPompe
+Vie privée : LaPompe envoie vos cookies de youtube.com, et les identifiants des vidéos et chaînes YouTube que vous ouvrez
+(pour son bouton), seulement à l'adresse de TonTuyau que vous réglez. Aucun autre site, aucun pistage, aucun serveur à
+elle. Son code est ouvert (MIT) : https://github.com/TonTuyau/LaPompe
 
 ## Catégorie
 
