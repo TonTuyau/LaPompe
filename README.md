@@ -39,8 +39,10 @@ LaPompe sends your youtube.com cookies to the TonTuyau address you set, and nowh
 
 Each version tag `vX.Y.Z` runs the full checks on its source, then publishes a
 [GitHub Release](https://github.com/TonTuyau/LaPompe/releases) with the Chrome and Firefox zips and the source package
-(`.github/workflows/release.yml`). What the add-on stores ask for is in [docs/store](docs/store/README.md);
-[docs/BUILD.md](docs/BUILD.md) says how to rebuild it from the source.
+(`.github/workflows/release.yml`), then, once you approve it, submits the version to addons.mozilla.org and the
+Chrome Web Store for their review ([docs/STORES.md](docs/STORES.md): how, and the credentials to set up once). What the
+add-on stores ask for is in [docs/store](docs/store/README.md); [docs/BUILD.md](docs/BUILD.md) says how to rebuild it
+from the source.
 
 ## Development
 
