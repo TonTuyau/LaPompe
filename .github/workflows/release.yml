@@ -94,6 +94,9 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 24
+          # Node alone: setup-node would otherwise cache for package.json's packageManager, and look for a pnpm this job
+          # doesn't install (the scripts it runs need nothing from node_modules).
+          package-manager-cache: false
       - uses: actions/download-artifact@v4
         with:
           name: lapompe-release
