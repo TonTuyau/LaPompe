@@ -1,8 +1,9 @@
 # Publishing LaPompe in the add-on stores
 
-What each store asks for, ready to use. The files to upload come from the version's GitHub Release
-(https://github.com/TonTuyau/LaPompe/releases): `lapompe-<version>-firefox.zip`, `lapompe-<version>-chrome.zip`, and,
-for Mozilla, `lapompe-<version>-source.zip`.
+What each store asks for, ready to use: the listing, set once on each store's page. Each new version is then uploaded
+by the release workflow, once approved ([STORES.md](../STORES.md)); by hand, the files come from the version's GitHub
+Release (https://github.com/TonTuyau/LaPompe/releases): `lapompe-<version>-firefox.zip`, `lapompe-<version>-chrome.zip`,
+and, for Mozilla, `lapompe-<version>-source.zip`.
 
 |                                                       |                                                                                                                                                                                 |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

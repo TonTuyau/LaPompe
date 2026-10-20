@@ -2,8 +2,10 @@ name: Release
 
 # A version tag vX.Y.Z: the full checks on that tag's source, then a GitHub Release with what the add-on stores take:
 # the Chrome and Firefox zips, and the source package (Mozilla's reviewers rebuild it: docs/BUILD.md), with the
-# version's notes (docs/releases/X.Y.Z.md). Also by hand, for a tag that has no release yet (Actions → Release → Run
-# workflow, with the tag).
+# version's notes (docs/releases/X.Y.Z.md). Then the stores, once approved: each store's job waits in the `stores`
+# environment (its required reviewer approves it on the run's page), then submits the version for the store's review
+# (docs/STORES.md). A store's job that failed is re-run alone. Also by hand, for a tag that has no release yet
+# (Actions → Release → Run workflow, with the tag).
 on:
   push:
     tags: ['v*.*.*']
@@ -63,3 +65,44 @@ jobs:
             "dist/lapompe-$VERSION-chrome.zip" \
             "dist/lapompe-$VERSION-firefox.zip" \
             "dist/lapompe-$VERSION-source.zip"
+
+      # The very zips of the release, for the stores' jobs.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lapompe-release
+          path: dist/*.zip
+          if-no-files-found: error
+
+  stores:
+    name: ${{ matrix.store }} store
+    needs: release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # Its secrets, and the approval: Settings → Environments → stores (docs/STORES.md).
+    environment: stores
+    strategy:
+      # One store failing doesn't stop the other; it's re-run alone.
+      fail-fast: false
+      matrix:
+        store: [firefox, chrome]
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          name: lapompe-release
+          path: dist
+      - name: Submit to the store
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+          CWS_SERVICE_ACCOUNT_KEY: ${{ secrets.CWS_SERVICE_ACCOUNT_KEY }}
+          CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+        run: node scripts/publish-store.ts "${{ matrix.store }}"
