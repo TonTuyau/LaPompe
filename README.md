@@ -3,7 +3,7 @@
 _LaPompe remplit TonTuyau._
 
 [TonTuyau](https://github.com/TonTuyau/TonTuyau)'s browser extension, for Firefox and Chrome: it sends your YouTube
-cookie to TonTuyau, so TonTuyau reads YouTube signed in, and (with TonTuyau 1.6) adds "Add to TonTuyau" buttons to
+cookie to TonTuyau, so TonTuyau reads YouTube signed in, and (with TonTuyau 2.0) adds "Add to TonTuyau" buttons to
 YouTube's pages.
 
 ## What it does
@@ -14,9 +14,11 @@ YouTube's pages.
   with YouTube; the popup shows what it answered (works, refused, not checked) and when it's sent next. YouTube renews
   its cookies while you browse: sending them often keeps TonTuyau's copy working.
 - **"Add to TonTuyau" on YouTube's pages**, next to Subscribe: on a video's page, and "Add channel to TonTuyau" on a
-  channel's. Disabled until TonTuyau says 1.6 or later (the version that downloads); its tooltip says why. With 1.6, a
-  click calls `POST /api/extension/videos/{id}` or `POST /api/extension/channels/{id}`: **provisional**, to match what
-  TonTuyau 1.6 defines.
+  channel's. Disabled until TonTuyau says it adds (2.0: `canAdd` in its connection test; LaPompe asks it again when
+  TonTuyau's version changes); its tooltip says why. On each page it asks TonTuyau where that video or channel stands
+  (`GET /api/extension/videos/{id}`, `/channels/{id}`): "In TonTuyau" (a video it has, a channel subscribed to) or
+  "Waiting in TonTuyau" (in its queue) take Add's place. A click calls `POST` on the same address: the video is
+  downloaded, the channel subscribed to with TonTuyau's default tabs, through TonTuyau's run queue.
 
 What it asks the browser for: `cookies` and `youtube.com` (to read the YouTube cookie, and to put its buttons on
 YouTube's pages), `storage` (its settings, in the extension's own storage), `alarms` (to send every N minutes), and

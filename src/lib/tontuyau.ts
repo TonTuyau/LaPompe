@@ -1,11 +1,32 @@
-// What LaPompe asks TonTuyau (its /api/extension endpoints, TonTuyau 1.5): who it is, and the YouTube cookie. Every
-// request carries the browser-extension API key (`Authorization: Bearer tt_…`).
+// What LaPompe asks TonTuyau (its /api/extension endpoints): who it is and whether it adds (2.0), the YouTube cookie
+// (1.5), and where a video or channel stands, adding it (2.0). Every request carries the browser-extension API key
+// (`Authorization: Bearer tt_…`).
 import type { Settings } from './settings'
 
-/** TonTuyau's answer to the connection test: its version, and the key's name ("Firefox, laptop (API key)"). */
+/**
+ * TonTuyau's answer to the connection test: its version, the key's name ("Firefox, laptop (API key)"), and whether it
+ * takes "Add to TonTuyau" (2.0; absent before, read as no).
+ */
 export interface Connection {
   version: string
   name: string
+  canAdd?: boolean
+}
+
+/**
+ * Where a video or channel stands in TonTuyau: absent (it can be added), fileMissing (a video it has without its file:
+ * adding it downloads the file), waiting (its run is in TonTuyau's queue, going on or on hold), inTonTuyau (a video
+ * with its file, a channel subscribed to).
+ */
+export interface Item {
+  state: 'absent' | 'fileMissing' | 'waiting' | 'inTonTuyau'
+  runId: string | null
+}
+
+/** A YouTube page's video or channel, by its id. */
+export interface Page {
+  kind: 'video' | 'channel'
+  id: string
 }
 
 /** The YouTube cookie as TonTuyau has it (never its content): whether YouTube took it. */
@@ -55,17 +76,22 @@ export async function sendCookie(
   return { cookie: body, version }
 }
 
+const itemPath = (page: Page) =>
+  `/api/extension/${page.kind === 'video' ? 'videos' : 'channels'}/${encodeURIComponent(page.id)}`
+
+/** Where the video or channel stands in TonTuyau (2.0, only once TonTuyau says it can add). */
+export async function itemState(settings: Settings, page: Page, fetchFn: typeof fetch = fetch): Promise<Item> {
+  const { body } = await call<Item>(settings, 'GET', itemPath(page), undefined, fetchFn)
+  return body
+}
+
 /**
- * "Add to TonTuyau" (TonTuyau 1.6): queues a video for download, or subscribes TonTuyau to a channel. Provisional:
- * TonTuyau 1.6 defines these endpoints (its PR B7); LaPompe calls them only once TonTuyau says 1.6 or later.
+ * "Add to TonTuyau" (2.0): queues the video's download, or subscribes TonTuyau to the channel (with its default tabs);
+ * one already waiting answers with its run. TonTuyau refuses (409) what it has already.
  */
-export async function add(
-  settings: Settings,
-  page: { kind: 'video' | 'channel'; id: string },
-  fetchFn: typeof fetch = fetch,
-): Promise<void> {
-  const path = page.kind === 'video' ? 'videos' : 'channels'
-  await call<unknown>(settings, 'POST', `/api/extension/${path}/${encodeURIComponent(page.id)}`, {}, fetchFn)
+export async function add(settings: Settings, page: Page, fetchFn: typeof fetch = fetch): Promise<Item> {
+  const { body } = await call<Item>(settings, 'POST', itemPath(page), undefined, fetchFn)
+  return body
 }
 
 async function call<T>(

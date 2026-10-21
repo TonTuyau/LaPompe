@@ -10,7 +10,7 @@
   import { isSetUp, loadSettings, type Settings } from '../lib/settings'
 
   let settings = $state<Settings | null>(null)
-  let known = $state<KnownTonTuyau>({ version: null, name: null })
+  let known = $state<KnownTonTuyau>({ version: null, name: null, canAdd: null })
   let last = $state<LastSend | null>(null)
   let next = $state<Date | null>(null)
   let sending = $state(false)

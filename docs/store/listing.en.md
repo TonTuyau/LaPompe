@@ -8,8 +8,8 @@ LaPompe
 
 ## Summary (Firefox: 250 characters at most; Chrome takes the manifest's description, 132 at most)
 
-Sends your YouTube sign-in to your own TonTuyau server, so it reads YouTube as you; with TonTuyau 1.6, adds "Add to
-TonTuyau" buttons to YouTube.
+Sends your YouTube sign-in to your own TonTuyau server, so it reads YouTube as you, and adds "Add to TonTuyau" buttons
+to YouTube's video and channel pages.
 
 ## Description
 
@@ -23,13 +23,14 @@ What it does:
   lets it read the videos your account can see. YouTube renews its cookies while you browse: sending them often keeps
   TonTuyau's copy working.
 - Shows, in its popup, what your TonTuyau answered: whether YouTube took the cookie, when it was sent, when it goes next.
-- Adds "Add to TonTuyau" next to Subscribe on YouTube's video and channel pages. It's disabled until your TonTuyau is
-  1.6 or later, the version that downloads.
+- Adds "Add to TonTuyau" next to Subscribe on YouTube's video and channel pages: one click, and your TonTuyau downloads
+  the video, or subscribes to the channel. It says when your TonTuyau has it already ("In TonTuyau") or is downloading
+  it ("Waiting in TonTuyau"). It needs TonTuyau 2.0 or later, the version that downloads.
 
 What you need: a TonTuyau server (1.5 or later) and an API key of kind "Browser extension" made in it.
 
-Privacy: LaPompe sends only your youtube.com cookies, and only to the TonTuyau address you set. No other site, no
-tracking, no server of its own. Its source is open (MIT): https://github.com/TonTuyau/LaPompe
+Privacy: LaPompe sends your youtube.com cookies, and the ids of the YouTube videos and channels you open (for its
+button), only to the TonTuyau address you set. No other site, no tracking, no server of its own. Its source is open (MIT): https://github.com/TonTuyau/LaPompe
 
 ## Category
 
@@ -44,8 +45,8 @@ tracking, no server of its own. Its source is open (MIT): https://github.com/Ton
 
 ## Chrome: single purpose
 
-Sends the user's YouTube sign-in (their youtube.com cookies) to the TonTuyau server they host themselves, so that
-server reads YouTube as them.
+Connects the browser to the TonTuyau server the user hosts themselves: sends their YouTube sign-in (their youtube.com
+cookies) so that server reads YouTube as them, and adds the YouTube videos and channels they choose to it.
 
 ## Chrome: permission justifications
 
@@ -55,8 +56,8 @@ server reads YouTube as them.
   server's last answer, in the extension's own storage.
 - **alarms**: to send the cookie every N minutes, as the user set.
 - **Host permission youtube.com**: to read the youtube.com cookies; to add the "Add to TonTuyau" button next to
-  Subscribe on YouTube's video and channel pages; and, when that button is clicked on a channel opened by its @handle,
-  to read that channel's page to find its id.
+  Subscribe on YouTube's video and channel pages; and, on a channel opened by its @handle, to read that channel's page
+  to find its id.
 - **Optional host permissions (any http/https address)**: each user hosts their own TonTuyau at their own address, which
   the extension can't know in advance. It asks for that one address only, when the user saves it in the settings; it
   never asks for any other site.
@@ -67,9 +68,10 @@ No. All the extension's code is in its package; it runs no code from anywhere el
 
 ## Chrome: data usage
 
-Tick **Authentication information**: the youtube.com cookies, the user's YouTube sign-in. And **Website content**: the
-id of a video or channel, from YouTube's page, sent only when the user clicks "Add to TonTuyau". Nothing else is
-collected: no browsing history (nothing is sent as the user browses, only the page whose button is clicked).
+Tick **Authentication information**: the youtube.com cookies, the user's YouTube sign-in. **Website content**: the id
+of a video or channel, from YouTube's page. And **Web history** (0.2.0): the id of each YouTube video or channel page
+the user opens, sent to their TonTuyau so the button says whether it has it already. Nothing else is collected, and
+nothing of any other site.
 
 Certify all three: the data isn't sold to third parties; it isn't used or transferred for purposes unrelated to the
 single purpose; it isn't used to determine creditworthiness or for lending. It goes only to the server address the user
@@ -77,8 +79,8 @@ sets (their own TonTuyau).
 
 ## Firefox: data collection (asked when submitting)
 
-Matches the manifest's `data_collection_permissions`: **Authentication information**, required, sent only to the
-TonTuyau address the user sets.
+Matches the manifest's `data_collection_permissions`: **Authentication information** and **Browsing activity** (0.2.0:
+the YouTube video and channel pages opened), both required, sent only to the TonTuyau address the user sets.
 
 ## Firefox: source code
 

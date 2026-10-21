@@ -152,20 +152,29 @@
   "adding": {
     "message": "Ajout…"
   },
-  "added": {
-    "message": "Ajoutée à TonTuyau"
-  },
   "addFailed": {
     "message": "Pas ajoutée : $1"
   },
-  "addNeeds16": {
-    "message": "Il faut TonTuyau 1.6, qui télécharge les vidéos (le vôtre a $1)."
+  "addNeedsAdding": {
+    "message": "Il faut un TonTuyau qui télécharge les vidéos (2.0 ou plus ; le vôtre a $1)."
+  },
+  "waitingInTonTuyau": {
+    "message": "En attente dans TonTuyau"
+  },
+  "waitingHint": {
+    "message": "Dans la file de TonTuyau : téléchargée à son tour."
+  },
+  "videoInTonTuyau": {
+    "message": "Dans TonTuyau"
+  },
+  "channelInTonTuyau": {
+    "message": "Abonné dans TonTuyau"
   },
   "addNotSetUp": {
     "message": "Réglez d'abord LaPompe : ses réglages, depuis son bouton dans la barre d'outils."
   },
   "addVersionUnknown": {
-    "message": "LaPompe ne connaît pas encore la version de votre TonTuyau : testez la connexion dans ses réglages."
+    "message": "LaPompe ne sait pas encore si votre TonTuyau peut ajouter : testez la connexion dans ses réglages."
   },
   "channelIdUnknown": {
     "message": "la page YouTube ne dit pas de quelle chaîne il s'agit."

@@ -52,8 +52,9 @@ export function manifest(browser: Browser, version: string): Record<string, unkn
             id: firefoxId,
             // The first versions that know data_collection_permissions: 140 (an ESR) and, on Android, 142.
             strict_min_version: '140.0',
-            // It sends the browser's YouTube cookie (a sign-in) to the TonTuyau its user chose, nowhere else.
-            data_collection_permissions: { required: ['authenticationInfo'] },
+            // It sends the browser's YouTube cookie (a sign-in) to the TonTuyau its user chose, nowhere else; and, to that
+            // TonTuyau only, the id of each YouTube video or channel page opened (its button: what TonTuyau has, 0.2.0).
+            data_collection_permissions: { required: ['authenticationInfo', 'browsingActivity'] },
           },
           gecko_android: { strict_min_version: '142.0' },
         },

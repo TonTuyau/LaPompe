@@ -1,9 +1,10 @@
-// The background: the alarm that sends the cookie every N minutes (the settings'), and the popup's "Send the cookie
-// now". Its listeners are added at once when it starts (a Chrome service worker or Firefox event page may be woken
-// up for any of them). One send at a time: a second ask while one goes on gets the same answer.
+// The background: the alarm that sends the cookie every N minutes (the settings'), the popup's "Send the cookie
+// now", and the YouTube pages' button (where a video or channel stands in TonTuyau, adding it). Its listeners are added
+// at once when it starts (a Chrome service worker or Firefox event page may be woken up for any of them). One send at a
+// time: a second ask while one goes on gets the same answer.
 import { pumpOnce, type LastSend } from './pump'
 import { isSetUp, loadSettings } from './settings'
-import { add, TonTuyauError } from './tontuyau'
+import { add, itemState, TonTuyauError, type Item, type Page } from './tontuyau'
 
 export const alarmName = 'pump'
 
@@ -14,13 +15,14 @@ export interface PumpMessage {
   type: 'pump'
 }
 
-/** From a YouTube page's button (TonTuyau 1.6): add this video or channel. */
+/** From a YouTube page's button (TonTuyau 2.0): add this video or channel, or say where it stands. */
 export interface AddMessage {
-  type: 'add'
-  page: { kind: 'video' | 'channel'; id: string }
+  type: 'add' | 'state'
+  page: Page
 }
 
-export type AddAnswer = { ok: true } | { ok: false; detail: string }
+/** TonTuyau's answer (the item as it stands now), or why there's none. */
+export type AddAnswer = { ok: true; item: Item } | { ok: false; detail: string }
 
 export function startBackground(ext: typeof chrome, fetchFn: typeof fetch = fetch): void {
   let running: Promise<LastSend> | null = null
@@ -55,10 +57,14 @@ export function startBackground(ext: typeof chrome, fetchFn: typeof fetch = fetc
       void pump()
     }
   })
-  const addPage = async (page: AddMessage['page']): Promise<AddAnswer> => {
+  const ask = async (message: AddMessage): Promise<AddAnswer> => {
     try {
-      await add(await loadSettings(ext.storage.local), page, fetchFn)
-      return { ok: true }
+      const settings = await loadSettings(ext.storage.local)
+      const item =
+        message.type === 'add'
+          ? await add(settings, message.page, fetchFn)
+          : await itemState(settings, message.page, fetchFn)
+      return { ok: true, item }
     } catch (error) {
       if (!(error instanceof TonTuyauError)) throw error
       return { ok: false, detail: error.detail }
@@ -69,8 +75,8 @@ export function startBackground(ext: typeof chrome, fetchFn: typeof fetch = fetc
     const sent = message as PumpMessage | AddMessage | undefined
     if (sent?.type === 'pump') {
       void pump().then(sendResponse)
-    } else if (sent?.type === 'add') {
-      void addPage(sent.page).then(sendResponse)
+    } else if (sent?.type === 'add' || sent?.type === 'state') {
+      void ask(sent).then(sendResponse)
     } else {
       return false
     }

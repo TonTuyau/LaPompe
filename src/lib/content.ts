@@ -1,11 +1,13 @@
 // LaPompe on YouTube's pages: an "Add to TonTuyau" button next to Subscribe, on a video's page and a channel's. It's
-// disabled (its tooltip says why) until LaPompe is set up and TonTuyau says 1.6 or later, the version that downloads.
-// YouTube changes page and redraws without loading a new one: the button is checked again on every change.
+// disabled (its tooltip says why) until LaPompe is set up and TonTuyau says it adds (2.0: `canAdd`, its connection
+// test). As it appears, it asks TonTuyau where its video or channel stands: "In TonTuyau" (a video it has, a channel
+// subscribed to) and "Waiting in TonTuyau" (in its queue) take the place of Add. YouTube changes page and redraws
+// without loading a new one: the button is checked again on every change.
 import type { AddAnswer, AddMessage } from './background'
+import type { Item } from './tontuyau'
 import { t } from './i18n'
 import { loadKnownTonTuyau, tonTuyauKey } from './pump'
 import { isSetUp, loadSettings } from './settings'
-import { addingSince, atLeast } from './version'
 import { anchorFor, channelIdAt, pageKind, type PageKind } from './youtubePage'
 
 /** The button's host element: its id, and which page it's for (data-page="video:abc…"). */
@@ -27,6 +29,8 @@ export function startContent(
 ): () => void {
   const document = window.document
   let ability: Ability = { enabled: false, why: '' }
+  // A channel's id by its @handle page, once read: the button asks with it, then adds with it.
+  const ids = new Map<string, string>()
 
   const refreshAbility = async () => {
     const [settings, known] = await Promise.all([loadSettings(ext.storage.local), loadKnownTonTuyau(ext.storage.local)])
@@ -34,9 +38,11 @@ export function startContent(
       ? { enabled: false, why: t('addNotSetUp') }
       : known.version === null
         ? { enabled: false, why: t('addVersionUnknown') }
-        : atLeast(known.version, addingSince)
+        : known.canAdd === true
           ? { enabled: true, why: '' }
-          : { enabled: false, why: t('addNeeds16', known.version) }
+          : known.canAdd === false
+            ? { enabled: false, why: t('addNeedsAdding', known.version) }
+            : { enabled: false, why: t('addVersionUnknown') }
   }
 
   const render = () => {
@@ -58,7 +64,7 @@ export function startContent(
       if (placed) return
     }
     current?.remove()
-    const host = button(document, page, ability, () => adding(page, ext, fetchFn))
+    const host = button(document, page, ability, (type) => asking(page, type, ids, ext, fetchFn))
     if (anchor.place === 'after') {
       anchor.element.after(host)
     } else {
@@ -96,21 +102,36 @@ export function startContent(
 
 const pageKey = (page: PageKind): string => `${page.kind}:${page.id === null ? page.path : page.id}`
 
-/** Adds this page's video or channel (the background asks TonTuyau); a channel by its @handle, once its id is read. */
-async function adding(page: PageKind, ext: typeof chrome, fetchFn: typeof fetch): Promise<AddAnswer> {
+/**
+ * Asks TonTuyau (through the background) where this page's video or channel stands, or adds it; a channel by its
+ * @handle, once its id is read (kept in `ids`).
+ */
+async function asking(
+  page: PageKind,
+  type: AddMessage['type'],
+  ids: Map<string, string>,
+  ext: typeof chrome,
+  fetchFn: typeof fetch,
+): Promise<AddAnswer> {
   let id: string | null
   try {
-    id = page.id === null ? await channelIdAt(page.path, fetchFn) : page.id
+    id = page.id ?? ids.get(page.path) ?? (await channelIdAt(page.path, fetchFn))
   } catch (error) {
     return { ok: false, detail: error instanceof Error ? error.message : String(error) }
   }
   if (id === null) return { ok: false, detail: t('channelIdUnknown') }
-  const message: AddMessage = { type: 'add', page: { kind: page.kind, id } }
+  if (page.id === null) ids.set(page.path, id)
+  const message: AddMessage = { type, page: { kind: page.kind, id } }
   return (await ext.runtime.sendMessage(message)) as AddAnswer
 }
 
 /** The button, in its own shadow root (YouTube's styles don't reach it, its don't reach YouTube). */
-function button(document: Document, page: PageKind, ability: Ability, add: () => Promise<AddAnswer>): HTMLElement {
+function button(
+  document: Document,
+  page: PageKind,
+  ability: Ability,
+  ask: (type: AddMessage['type']) => Promise<AddAnswer>,
+): HTMLElement {
   const host = document.createElement('span')
   host.id = hostId
   host.dataset.page = pageKey(page)
@@ -123,15 +144,37 @@ function button(document: Document, page: PageKind, ability: Ability, add: () =>
   button.disabled = !ability.enabled
   button.title = ability.why
   const label = document.createElement('span')
-  label.textContent = page.kind === 'video' ? t('addVideo') : t('addChannel')
+  const addLabel = page.kind === 'video' ? t('addVideo') : t('addChannel')
+  label.textContent = addLabel
   button.append(pump(document), label)
+  // What TonTuyau has takes Add's place; without an answer (TonTuyau down), Add stays: adding says why if it fails.
+  const show = (item: Item) => {
+    if (item.state === 'waiting') {
+      label.textContent = t('waitingInTonTuyau')
+      button.title = t('waitingHint')
+      button.disabled = true
+    } else if (item.state === 'inTonTuyau') {
+      label.textContent = page.kind === 'video' ? t('videoInTonTuyau') : t('channelInTonTuyau')
+      button.title = ''
+      button.disabled = true
+    }
+  }
+  if (ability.enabled) {
+    void ask('state').then((answer) => {
+      if (answer.ok) show(answer.item)
+    })
+  }
   button.addEventListener('click', () => {
     button.disabled = true
     label.textContent = t('adding')
-    void add().then((answer) => {
-      label.textContent = answer.ok ? t('added') : page.kind === 'video' ? t('addVideo') : t('addChannel')
-      button.title = answer.ok ? '' : t('addFailed', answer.detail)
-      button.disabled = answer.ok
+    void ask('add').then((answer) => {
+      if (answer.ok) {
+        show(answer.item)
+      } else {
+        label.textContent = addLabel
+        button.title = t('addFailed', answer.detail)
+        button.disabled = false
+      }
     })
   })
   root.append(style, button)

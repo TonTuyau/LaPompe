@@ -1,4 +1,4 @@
-import { connect, sendCookie, TonTuyauError } from './tontuyau'
+import { add, connect, itemState, sendCookie, TonTuyauError } from './tontuyau'
 
 const settings = { url: 'https://tontuyau.example.net', apiKey: 'tt_k7Qm0042', everyMinutes: 30 }
 
@@ -70,6 +70,31 @@ describe('TonTuyau', () => {
 
     expect(error).toBeInstanceOf(TonTuyauError)
     expect(error).toMatchObject({ failure, detail, status })
+  })
+
+  it('asks where a video or channel stands, and adds it, with the key', async () => {
+    const fetchFn = vi.fn(async (_input: string | URL | Request, init?: RequestInit) =>
+      init?.method === 'POST'
+        ? new Response(JSON.stringify({ state: 'waiting', runId: 'run-1' }), { status: 202 })
+        : new Response(JSON.stringify({ state: 'absent', runId: null })),
+    )
+
+    expect(await itemState(settings, { kind: 'video', id: 'k3Fq8xZ0aQw' }, fetchFn)).toEqual({
+      state: 'absent',
+      runId: null,
+    })
+    expect(await add(settings, { kind: 'channel', id: 'UCx7Lm2QpB0vK9sTq4aZ1wYc' }, fetchFn)).toEqual({
+      state: 'waiting',
+      runId: 'run-1',
+    })
+    const [[getUrl, get], [postUrl, post]] = fetchFn.mock.calls as unknown as [
+      [string, RequestInit],
+      [string, RequestInit],
+    ]
+    expect(getUrl).toBe('https://tontuyau.example.net/api/extension/videos/k3Fq8xZ0aQw')
+    expect(get).toMatchObject({ method: 'GET', headers: { Authorization: 'Bearer tt_k7Qm0042' } })
+    expect(postUrl).toBe('https://tontuyau.example.net/api/extension/channels/UCx7Lm2QpB0vK9sTq4aZ1wYc')
+    expect(post).toMatchObject({ method: 'POST', body: undefined })
   })
 
   it("says when TonTuyau can't be reached", async () => {
