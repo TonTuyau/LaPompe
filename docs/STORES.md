@@ -19,6 +19,12 @@ same version twice: once a job got past its upload, a fix is a new version.
 The listing itself (descriptions, screenshots, privacy answers) isn't sent: it stays as set on each store's page
 ([store/README.md](store/README.md)).
 
+**A version that changes what LaPompe declares** (a permission, data it sends: its notes and `PRIVACY.md` say so):
+update the store's forms **before approving the store jobs**. Once a version is submitted, the Chrome Web Store locks
+its listing while it's in review; then, on the item's Store listing page, **⋮ → Cancel review** (back to a draft),
+change the form, and **Submit for review** again (the uploaded zip stays). Firefox reads its data declaration from the
+manifest: nothing to change there by hand.
+
 ## Setting it up, once
 
 The credentials are secrets of the `stores` environment: only its jobs read them, and only after your approval.
