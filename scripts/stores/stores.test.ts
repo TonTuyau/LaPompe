@@ -38,10 +38,11 @@ describe('Firefox (AMO)', () => {
     addonId: 'tontuyau@lapompe',
     zip: { name: 'lapompe-0.1.5-firefox.zip', data: new Blob(['zip']) },
     source: { name: 'lapompe-0.1.5-source.zip', data: new Blob(['source']) },
+    license: { name: 'GNU General Public License v3.0 or later', text: 'The GPL.' },
     notes: '- The channel button.',
   }
 
-  it('uploads, waits for the validator, makes the version with its notes, then attaches the source', async () => {
+  it('uploads, waits for the validator, makes the version with its licence and notes, attaches the source', async () => {
     const { calls, fetchFn } = store([
       [201, { uuid: 'u-1', processed: false, valid: false }],
       [200, { uuid: 'u-1', processed: false, valid: false }],
@@ -64,6 +65,10 @@ describe('Firefox (AMO)', () => {
     expect((upload.get('upload') as File).name).toBe('lapompe-0.1.5-firefox.zip')
     expect(JSON.parse(String(calls[3]?.body))).toEqual({
       upload: 'u-1',
+      custom_license: {
+        name: { 'en-US': 'GNU General Public License v3.0 or later' },
+        text: { 'en-US': 'The GPL.' },
+      },
       release_notes: { 'en-US': '- The channel button.' },
     })
     expect(((calls[4]?.body as FormData).get('source') as File).name).toBe('lapompe-0.1.5-source.zip')

@@ -1,6 +1,6 @@
 // Firefox: a new listed version on addons.mozilla.org (AMO's API v5, https://mozilla.github.io/addons-server/).
 //   1. upload the add-on's zip (channel "listed"), then look until AMO's validator processed it: refused if invalid;
-//   2. make the version from that upload, with its release notes (English);
+//   2. make the version from that upload, with its licence and its release notes (English);
 //   3. attach the source package (the code is built: Mozilla's reviewers rebuild it, docs/BUILD.md). AMO takes the
 //      source only as a file of its own request, not with the notes.
 // Then it's in Mozilla's review queue, as when it's submitted by hand.
@@ -18,6 +18,11 @@ export interface AmoRelease {
   addonId: string
   zip: { name: string; data: Blob }
   source: { name: string; data: Blob }
+  /**
+   * The version's licence, a custom one: AMO's own licences have the GPL 3 "only", not "or later" (the version
+   * inherits the one before when it's left out, MIT up to 0.2.0).
+   */
+  license: { name: string; text: string }
   /** The version's notes; null: none. */
   notes: string | null
 }
@@ -107,6 +112,7 @@ export async function publishToAmo(
       headers: { Authorization: auth(), 'Content-Type': 'application/json' },
       body: JSON.stringify({
         upload: uploaded.uuid,
+        custom_license: { name: { 'en-US': release.license.name }, text: { 'en-US': release.license.text } },
         ...(release.notes ? { release_notes: { 'en-US': release.notes } } : {}),
       }),
     }),

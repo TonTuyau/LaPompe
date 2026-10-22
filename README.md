@@ -2,6 +2,10 @@
 
 _LaPompe remplit TonTuyau._
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/cbijokghilmbekhefojdfoipjiefmoio?label=Chrome%20Web%20Store&logo=googlechrome&logoColor=white&color=0f8b8d)](https://chromewebstore.google.com/detail/lapompe/cbijokghilmbekhefojdfoipjiefmoio)
+[![Firefox Add-ons](https://img.shields.io/amo/v/lapompe?label=Firefox%20Add-ons&logo=firefoxbrowser&logoColor=white&color=0f8b8d)](https://addons.mozilla.org/firefox/addon/lapompe/)
+[![License: GPL v3+](https://img.shields.io/badge/license-GPL--3.0--or--later-0f8b8d)](LICENSE)
+
 [TonTuyau](https://github.com/TonTuyau/TonTuyau)'s browser extension, for Firefox and Chrome: it sends your YouTube
 cookie to TonTuyau, so TonTuyau reads YouTube signed in, and (with TonTuyau 2.0) adds "Add to TonTuyau" buttons to
 YouTube's pages.
@@ -27,15 +31,19 @@ save the settings too.
 
 ## Setting it up
 
-1. In TonTuyau: Admin → API keys → New key, of kind "Browser extension". Copy its secret (shown once).
-2. In LaPompe's settings (its toolbar button → Settings): TonTuyau's address and that key, then Save (the browser asks
+1. Install it: [Chrome Web Store](https://chromewebstore.google.com/detail/lapompe/cbijokghilmbekhefojdfoipjiefmoio)
+   (Chrome, Edge, Brave…) or [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/lapompe/).
+2. In TonTuyau: Admin → API keys → New key, of kind "Browser extension". Copy its secret (shown once).
+3. In LaPompe's settings (its toolbar button → Settings): TonTuyau's address and that key, then Save (the browser asks
    once to let LaPompe reach that address and youtube.com), and Test the connection.
-3. Be signed in on youtube.com in this browser.
+4. Be signed in on youtube.com in this browser.
 
 ## Privacy, license
 
 LaPompe sends your youtube.com cookies to the TonTuyau address you set, and nowhere else: see
-[PRIVACY.md](PRIVACY.md). It's free software under the [MIT license](LICENSE).
+[PRIVACY.md](PRIVACY.md). It's free software: you can redistribute it and/or modify it under the terms of the
+[GNU General Public License](LICENSE) as published by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
 
 ## Releases
 
