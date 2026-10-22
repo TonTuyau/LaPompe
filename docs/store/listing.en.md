@@ -30,7 +30,7 @@ What it does:
 What you need: a TonTuyau server (1.5 or later) and an API key of kind "Browser extension" made in it.
 
 Privacy: LaPompe sends your youtube.com cookies, and the ids of the YouTube videos and channels you open (for its
-button), only to the TonTuyau address you set. No other site, no tracking, no server of its own. Its source is open (MIT): https://github.com/TonTuyau/LaPompe
+button), only to the TonTuyau address you set. No other site, no tracking, no server of its own. Its source is open (GPL-3.0-or-later): https://github.com/TonTuyau/LaPompe
 
 ## Category
 
@@ -41,7 +41,7 @@ button), only to the TonTuyau address you set. No other site, no tracking, no se
 
 - Website and support: https://github.com/TonTuyau/LaPompe
 - Privacy policy: https://github.com/TonTuyau/LaPompe/blob/main/PRIVACY.md
-- License: MIT
+- License: GPL-3.0-or-later
 
 ## Chrome: single purpose
 

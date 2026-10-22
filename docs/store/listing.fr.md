@@ -32,7 +32,7 @@ Ce qu'il faut : un serveur TonTuyau (1.5 ou plus) et une clé d'API de type « E
 
 Vie privée : LaPompe envoie vos cookies de youtube.com, et les identifiants des vidéos et chaînes YouTube que vous ouvrez
 (pour son bouton), seulement à l'adresse de TonTuyau que vous réglez. Aucun autre site, aucun pistage, aucun serveur à
-elle. Son code est ouvert (MIT) : https://github.com/TonTuyau/LaPompe
+elle. Son code est ouvert (GPL-3.0-or-later) : https://github.com/TonTuyau/LaPompe
 
 ## Catégorie
 
@@ -43,7 +43,7 @@ elle. Son code est ouvert (MIT) : https://github.com/TonTuyau/LaPompe
 
 - Site et assistance : https://github.com/TonTuyau/LaPompe
 - Politique de confidentialité : https://github.com/TonTuyau/LaPompe/blob/main/PRIVACY.md
-- Licence : MIT
+- Licence : GPL-3.0-or-later
 
 Les réponses aux questions de Chrome (usage unique, justification des permissions, code distant, données) et de
 Firefox (collecte de données, code source) se donnent en anglais : voir `listing.en.md`.

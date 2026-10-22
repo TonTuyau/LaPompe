@@ -1,9 +1,10 @@
 // Publishes the built version to one store: node scripts/publish-store.ts <firefox|chrome> [--dry-run | --check]
 // The version is package.json's; its zips are dist/'s (pnpm run build, and the release workflow's source package);
-// its notes docs/releases/<version>.md. The stores' credentials come from the environment (the release workflow's
-// `stores` environment, docs/STORES.md); --dry-run checks the files and that each credential is there, says what it
-// would send, and sends nothing; --check signs in to the store and reads the add-on's version there, without a file
-// and without changing anything (the "Store credentials" workflow).
+// its notes docs/releases/<version>.md; its licence on AMO, the LICENSE file with what says "or later". The stores'
+// credentials come from the environment (the release workflow's `stores` environment, docs/STORES.md); --dry-run
+// checks the files and that each credential is there, says what it would send, and sends nothing; --check signs in to
+// the store and reads the add-on's version there, without a file and without changing anything (the "Store
+// credentials" workflow).
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -12,7 +13,23 @@ import { checkAmo, publishToAmo } from './stores/amo.ts'
 import { checkChrome, publishToChrome } from './stores/chrome.ts'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
-const version: string = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version
+const pkg: { version: string; license: string } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
+const version = pkg.version
+if (pkg.license !== 'GPL-3.0-or-later') {
+  console.error(`package.json says ${pkg.license}: AMO's licence below is the GPL 3 or later, make them agree.`)
+  process.exit(2)
+}
+
+const license = {
+  name: 'GNU General Public License v3.0 or later',
+  text: [
+    'LaPompe is free software: you can redistribute it and/or modify it under the terms of the GNU General Public',
+    'License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any',
+    'later version.',
+    '',
+    readFileSync(join(root, 'LICENSE'), 'utf8'),
+  ].join('\n'),
+}
 const [store, ...flags] = process.argv.slice(2)
 const dryRun = flags.includes('--dry-run')
 const check = flags.includes('--check')
@@ -62,7 +79,7 @@ if (check) {
   const source = file(`lapompe-${version}-source.zip`)
   if (dryRun) {
     console.log(
-      `Dry run: ${firefoxId} ${version} to AMO (listed), ${zip.name} + ${source.name}, notes: ${notes ? 'yes' : 'none'}.`,
+      `Dry run: ${firefoxId} ${version} to AMO (listed), ${zip.name} + ${source.name}, ${license.name}, notes: ${notes ? 'yes' : 'none'}.`,
     )
   } else {
     await publishToAmo({
@@ -71,6 +88,7 @@ if (check) {
       addonId: firefoxId,
       zip,
       source,
+      license,
       notes,
     })
   }
