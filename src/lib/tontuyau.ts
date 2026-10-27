@@ -1,7 +1,10 @@
 // What LaPompe asks TonTuyau (its /api/extension endpoints): who it is and whether it adds (2.0), the YouTube cookie
-// (1.5), and where a video or channel stands, adding it (2.0). Every request carries the browser-extension API key
-// (`Authorization: Bearer tt_…`).
-import type { Settings } from './settings'
+// (1.5), and where a video or channel stands, adding it (2.0). Every request goes to one TonTuyau (0.3.0: an instance of
+// the settings') with its browser-extension API key (`Authorization: Bearer tt_…`).
+import type { Instance } from './settings'
+
+/** Where a request goes: a TonTuyau's address and its key. */
+export type Target = Pick<Instance, 'url' | 'apiKey'>
 
 /**
  * TonTuyau's answer to the connection test: its version, the key's name ("Firefox, laptop (API key)"), and whether it
@@ -55,19 +58,19 @@ export class TonTuyauError extends Error {
 /** The header every TonTuyau answer carries with its version. */
 export const versionHeader = 'X-TonTuyau-Version'
 
-export async function connect(settings: Settings, fetchFn: typeof fetch = fetch): Promise<Connection> {
-  const { body } = await call<Connection>(settings, 'GET', '/api/extension/connection', undefined, fetchFn)
+export async function connect(target: Target, fetchFn: typeof fetch = fetch): Promise<Connection> {
+  const { body } = await call<Connection>(target, 'GET', '/api/extension/connection', undefined, fetchFn)
   return body
 }
 
 /** Sends the cookie file; TonTuyau checks it with YouTube at once (a few seconds), then answers. */
 export async function sendCookie(
-  settings: Settings,
+  target: Target,
   cookies: string,
   fetchFn: typeof fetch = fetch,
 ): Promise<{ cookie: CookieState; version: string | null }> {
   const { body, version } = await call<CookieState>(
-    settings,
+    target,
     'PUT',
     '/api/extension/youtube-cookie',
     { cookies },
@@ -80,8 +83,8 @@ const itemPath = (page: Page) =>
   `/api/extension/${page.kind === 'video' ? 'videos' : 'channels'}/${encodeURIComponent(page.id)}`
 
 /** Where the video or channel stands in TonTuyau (2.0, only once TonTuyau says it can add). */
-export async function itemState(settings: Settings, page: Page, fetchFn: typeof fetch = fetch): Promise<Item> {
-  const { body } = await call<Item>(settings, 'GET', itemPath(page), undefined, fetchFn)
+export async function itemState(target: Target, page: Page, fetchFn: typeof fetch = fetch): Promise<Item> {
+  const { body } = await call<Item>(target, 'GET', itemPath(page), undefined, fetchFn)
   return body
 }
 
@@ -89,13 +92,13 @@ export async function itemState(settings: Settings, page: Page, fetchFn: typeof 
  * "Add to TonTuyau" (2.0): queues the video's download, or subscribes TonTuyau to the channel (with its default tabs);
  * one already waiting answers with its run. TonTuyau refuses (409) what it has already.
  */
-export async function add(settings: Settings, page: Page, fetchFn: typeof fetch = fetch): Promise<Item> {
-  const { body } = await call<Item>(settings, 'POST', itemPath(page), undefined, fetchFn)
+export async function add(target: Target, page: Page, fetchFn: typeof fetch = fetch): Promise<Item> {
+  const { body } = await call<Item>(target, 'POST', itemPath(page), undefined, fetchFn)
   return body
 }
 
 async function call<T>(
-  settings: Settings,
+  target: Target,
   method: string,
   path: string,
   body: unknown,
@@ -103,11 +106,11 @@ async function call<T>(
 ): Promise<{ body: T; version: string | null }> {
   let response: Response
   try {
-    response = await fetchFn(settings.url + path, {
+    response = await fetchFn(target.url + path, {
       method,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${settings.apiKey}`,
+        Authorization: `Bearer ${target.apiKey}`,
         ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
       },
       body: body === undefined ? undefined : JSON.stringify(body),

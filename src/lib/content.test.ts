@@ -1,6 +1,6 @@
 import { fakeExt, type FakeExt } from '../test/fakeExt'
 import { startBackground } from './background'
-import { hostId, startContent } from './content'
+import { hostId, menuId, startContent } from './content'
 
 const settings = { url: 'https://tontuyau.example.net', apiKey: 'tt_k7Qm0042', everyMinutes: 30 }
 const watchPage =
@@ -109,7 +109,7 @@ describe('the buttons on YouTube', () => {
     open('/watch?v=k3Fq8xZ0aQw', watchPage, fake)
     await vi.waitFor(() => expect(shadowButton()).toBeDisabled())
 
-    await fake.ext.storage.local.set({ tontuyau: adds })
+    await fake.ext.storage.local.set({ known: { '1': adds } })
 
     await vi.waitFor(() => expect(shadowButton()).toBeEnabled())
   })
@@ -190,5 +190,98 @@ describe('the buttons on YouTube', () => {
     )
     expect(shadowButton()).toBeEnabled()
     expect(tonTuyau).not.toHaveBeenCalled()
+  })
+
+  describe('with several TonTuyau (0.3.0)', () => {
+    const home = { id: 'a1', name: 'Home', url: 'https://tontuyau.example.net', apiKey: 'tt_k7Qm0042' }
+    const lucas = { id: 'b2', name: 'Lucas', url: 'https://tube.lucas.example', apiKey: 'tt_Pq8s' }
+    const old = { id: 'c3', name: '', url: 'https://old.tontuyau.example', apiKey: 'tt_Zz0y' }
+    const several = { instances: [home, lucas, old], everyMinutes: 30 }
+    const known = { a1: adds, b2: adds, c3: { version: '1.5.1', name: null, canAdd: false } }
+
+    /** Home has the video, Lucas doesn't: each answers for itself, Lucas adds. */
+    const tonTuyaus = () =>
+      vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+        const url = String(input)
+        const answer =
+          init?.method === 'POST'
+            ? { state: 'waiting', runId: 'run-2' }
+            : { state: url.startsWith(home.url) ? 'inTonTuyau' : 'absent', runId: null }
+        return new Response(JSON.stringify(answer), { status: init?.method === 'POST' ? 202 : 200 })
+      })
+
+    const menu = () => document.getElementById(menuId)?.shadowRoot ?? null
+    const rows = () => [...(menu()?.querySelectorAll('.item') ?? [])] as HTMLElement[]
+
+    it('sums up where the video stands in those that add, and opens a menu of each', async () => {
+      const fake = fakeExt({ settings: several, known })
+      startBackground(fake.ext, tonTuyaus())
+      open('/watch?v=k3Fq8xZ0aQw', watchPage, fake)
+
+      await vi.waitFor(() => expect(shadowButton()).toHaveTextContent('In 1 of 2 TonTuyau'))
+      expect(shadowButton()).toBeEnabled()
+      expect(shadowButton()).toHaveAttribute('aria-expanded', 'false')
+      shadowButton()?.click()
+
+      expect(shadowButton()).toHaveAttribute('aria-expanded', 'true')
+      expect(menu()?.querySelector('.title')).toHaveTextContent('This video in your TonTuyau')
+      expect(rows().map((row) => row.textContent)).toEqual([
+        'Hometontuyau.example.netIn TonTuyau',
+        'Lucastube.lucas.exampleAdd',
+        'old.tontuyau.exampleNeeds a TonTuyau that downloads videos (2.0 or later; yours has 1.5.1).—',
+      ])
+      expect(rows()[2]).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    it("adds to the one picked, then says it's there", async () => {
+      const fake = fakeExt({ settings: several, known })
+      const fetchFn = tonTuyaus()
+      startBackground(fake.ext, fetchFn)
+      open('/watch?v=k3Fq8xZ0aQw', watchPage, fake)
+      await vi.waitFor(() => expect(shadowButton()).toHaveTextContent('In 1 of 2 TonTuyau'))
+      shadowButton()?.click()
+
+      rows()[1]?.querySelector('button')?.click()
+
+      await vi.waitFor(() => expect(rows()[1]).toHaveTextContent('Waiting'))
+      expect(shadowButton()).toHaveTextContent('In TonTuyau')
+      expect(fetchFn).toHaveBeenCalledWith(
+        'https://tube.lucas.example/api/extension/videos/k3Fq8xZ0aQw',
+        expect.objectContaining({ method: 'POST' }),
+      )
+      expect(fetchFn).not.toHaveBeenCalledWith(
+        expect.stringContaining(home.url),
+        expect.objectContaining({ method: 'POST' }),
+      )
+    })
+
+    it('closes its menu on Escape, a click elsewhere, or another page', async () => {
+      const fake = fakeExt({ settings: several, known })
+      startBackground(fake.ext, tonTuyaus())
+      open('/watch?v=k3Fq8xZ0aQw', watchPage, fake)
+      await vi.waitFor(() => expect(shadowButton()).toBeEnabled())
+
+      shadowButton()?.click()
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+      expect(menu()).toBeNull()
+
+      shadowButton()?.click()
+      document.body.click()
+      expect(menu()).toBeNull()
+
+      shadowButton()?.click()
+      history.pushState(null, '', '/results?search_query=pump')
+      document.dispatchEvent(new Event('yt-navigate-finish'))
+      await vi.waitFor(() => expect(menu()).toBeNull())
+    })
+
+    it('is disabled when none of them adds, saying why', async () => {
+      const fake = fakeExt({ settings: several, known: { c3: known.c3 } })
+      open('/channel/UCx7Lm2QpB0vK9sTq4aZ1wYc', channelHeader, fake)
+
+      await vi.waitFor(() => expect(shadowButton()).toBeDisabled())
+      expect(shadowButton()).toHaveTextContent('Add channel to TonTuyau')
+      expect(shadowButton()?.title).toMatch(/None of your TonTuyau can add yet/)
+    })
   })
 })

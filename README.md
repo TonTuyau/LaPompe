@@ -44,7 +44,8 @@ Next to **Subscribe**, on YouTube's own pages:
 - on a channel: **Add channel to TonTuyau** subscribes your TonTuyau to it, and its new videos come by themselves.
 
 The button knows what your TonTuyau already has: it reads **In TonTuyau**, **Subscribed in TonTuyau** or **Waiting in
-TonTuyau** instead.
+TonTuyau** instead. With several TonTuyau, it sums them up (**In 1 of 2 TonTuyau**) and its menu adds to the one you
+pick.
 
 ### 🍪 Keeps TonTuyau signed in to YouTube
 
@@ -60,21 +61,22 @@ cookies while you browse, so sending them often keeps TonTuyau's copy working.
 2. **Make it a key** in TonTuyau: Admin → API keys → New key, of kind "Browser extension". Copy its secret: it's shown
    once.
 3. **Connect it**: LaPompe's toolbar button → Settings, then TonTuyau's address and that key, and Save. The browser asks
-   once to let LaPompe reach that address and youtube.com. Then **Test the connection**.
+   once to let LaPompe reach that address and youtube.com. Then **Test the connection**. Another TonTuyau? **Add a
+   TonTuyau**, with a key made in that one: your YouTube cookie goes to each TonTuyau listed.
 4. **Be signed in on youtube.com** in this browser. That's it.
 
 ## 🔒 Privacy
 
 LaPompe talks to **your TonTuyau and nothing else**: no server of its own, no analytics, no ads. Your youtube.com
-cookies go only to the TonTuyau address you set; the API key stays in the browser's extension storage, never in a web
-page. The full policy: [PRIVACY.md](PRIVACY.md).
+cookies go only to the TonTuyau addresses you set; the API keys stay in the browser's extension storage, never in a
+web page. The full policy: [PRIVACY.md](PRIVACY.md).
 
 What it asks the browser for, and why:
 
 | Permission               | Why                                                                   |
 | ------------------------ | --------------------------------------------------------------------- |
 | `cookies`, `youtube.com` | to read your YouTube cookie, and to put its button on YouTube's pages |
-| your TonTuyau's address  | to reach it, and only it: asked when you save the settings            |
+| your TonTuyau's address  | to reach them, and only them: asked when you save the settings        |
 | `storage`                | its settings, in the extension's own storage                          |
 | `alarms`                 | to send the cookie every N minutes                                    |
 

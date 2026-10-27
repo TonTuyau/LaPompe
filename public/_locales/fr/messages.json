@@ -11,15 +11,6 @@
   "settings": {
     "message": "Réglages"
   },
-  "popupTonTuyau": {
-    "message": "TonTuyau"
-  },
-  "popupAs": {
-    "message": "En tant que"
-  },
-  "popupCookie": {
-    "message": "Cookie"
-  },
   "popupNext": {
     "message": "Prochain"
   },
@@ -31,9 +22,6 @@
   },
   "cookieUnchecked": {
     "message": "Pas vérifié"
-  },
-  "sentAgo": {
-    "message": "envoyé $1"
   },
   "neverSent": {
     "message": "jamais envoyé"
@@ -51,7 +39,7 @@
     "message": "Seuls les cookies de youtube.com sont envoyés. TonTuyau les vérifie aussitôt en lisant vos vidéos « J'aime »."
   },
   "notSetUp": {
-    "message": "Pas encore réglée : donnez-lui l'adresse de votre TonTuyau et une clé d'API d'extension."
+    "message": "Pas encore réglée : donnez-lui l'adresse d'un TonTuyau et une clé d'API d'extension."
   },
   "openSettings": {
     "message": "Ouvrir les réglages"
@@ -87,7 +75,7 @@
     "message": "Réglages de LaPompe"
   },
   "urlLabel": {
-    "message": "Adresse de TonTuyau"
+    "message": "Adresse"
   },
   "urlHint": {
     "message": "L'adresse où vous ouvrez TonTuyau. Le navigateur demande une fois de laisser LaPompe l'atteindre."
@@ -96,7 +84,7 @@
     "message": "Clé d'API"
   },
   "keyHint": {
-    "message": "Créée dans TonTuyau : Admin → Clés d'API → Nouvelle clé, type « Extension de navigateur ». Affichée une seule fois là-bas : collez-la ici."
+    "message": "Créée dans ce TonTuyau : Admin → Clés d'API → Nouvelle clé, type « Extension de navigateur ». Affichée une seule fois là-bas : collez-la ici."
   },
   "everyLabel": {
     "message": "Envoyer le cookie YouTube toutes les"
@@ -105,7 +93,7 @@
     "message": "minutes"
   },
   "everyHint": {
-    "message": "$1 ou plus. YouTube renouvelle ses cookies pendant que vous naviguez : un intervalle court garde la copie de TonTuyau valable."
+    "message": "$1 ou plus, à chaque TonTuyau ci-dessus, en même temps. YouTube renouvelle ses cookies pendant que vous naviguez : un intervalle court garde la copie de TonTuyau valable."
   },
   "save": {
     "message": "Enregistrer"
@@ -141,7 +129,7 @@
     "message": "Un nombre entier, $1 ou plus."
   },
   "optionsNote": {
-    "message": "Enregistrer demande au navigateur la permission d'atteindre cette adresse seulement (aucun autre site), et youtube.com pour son cookie. La clé reste dans le stockage de l'extension, jamais dans une page web."
+    "message": "Enregistrer demande au navigateur la permission d'atteindre ces adresses seulement (aucun autre site), et youtube.com pour son cookie ; un TonTuyau retiré rend sa permission. Les clés restent dans le stockage de l'extension, jamais dans une page web."
   },
   "addVideo": {
     "message": "Ajouter à TonTuyau"
@@ -178,5 +166,86 @@
   },
   "channelIdUnknown": {
     "message": "la page YouTube ne dit pas de quelle chaîne il s'agit."
+  },
+  "instancesTitle": {
+    "message": "Vos TonTuyau"
+  },
+  "instancesOne": {
+    "message": "1 instance"
+  },
+  "instancesMany": {
+    "message": "$1 instances"
+  },
+  "newInstance": {
+    "message": "Nouveau TonTuyau"
+  },
+  "versionShort": {
+    "message": "TonTuyau $1"
+  },
+  "nameLabel": {
+    "message": "Nom"
+  },
+  "optional": {
+    "message": "(facultatif)"
+  },
+  "namePlaceholder": {
+    "message": "Maison, Lucas…"
+  },
+  "remove": {
+    "message": "Retirer"
+  },
+  "addInstance": {
+    "message": "Ajouter un TonTuyau"
+  },
+  "cookieToEvery": {
+    "message": "Votre cookie YouTube est envoyé à chaque TonTuyau de cette liste."
+  },
+  "cookieToEveryHint": {
+    "message": "C'est votre session YouTube connectée : n'ajoutez que des TonTuyau dont vous confieriez la session au propriétaire."
+  },
+  "urlTwice": {
+    "message": "Ce TonTuyau est déjà dans la liste."
+  },
+  "permissionRefusedAll": {
+    "message": "Sans votre accord, LaPompe ne peut pas atteindre ces adresses : rien n'a été enregistré."
+  },
+  "cookieNotSent": {
+    "message": "Pas envoyé"
+  },
+  "popupSent": {
+    "message": "Envoyé"
+  },
+  "sentToSome": {
+    "message": "à $1 sur $2"
+  },
+  "sendNowAll": {
+    "message": "Envoyer le cookie maintenant, à tous"
+  },
+  "videoInSome": {
+    "message": "Dans $1 TonTuyau sur $2"
+  },
+  "channelInSome": {
+    "message": "Abonné dans $1 TonTuyau sur $2"
+  },
+  "menuTitleVideo": {
+    "message": "Cette vidéo dans vos TonTuyau"
+  },
+  "menuTitleChannel": {
+    "message": "Cette chaîne dans vos TonTuyau"
+  },
+  "menuAdd": {
+    "message": "Ajouter"
+  },
+  "menuWaiting": {
+    "message": "En attente"
+  },
+  "menuSubscribed": {
+    "message": "Abonné"
+  },
+  "addNoneCan": {
+    "message": "Aucun de vos TonTuyau ne peut encore ajouter : testez leur connexion dans les réglages de LaPompe (2.0 ou plus le peut)."
+  },
+  "addGone": {
+    "message": "Ce TonTuyau n'est plus dans les réglages de LaPompe."
   }
 }
