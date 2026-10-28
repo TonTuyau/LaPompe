@@ -48,9 +48,29 @@ describe('background', () => {
 
     const [first, second] = await Promise.all([fake.send({ type: 'pump' }), fake.send({ type: 'pump' })])
 
-    expect(first).toMatchObject({ cookie: works })
+    expect(first).toMatchObject({ sends: { '1': { cookie: works } } })
     expect(second).toEqual(first)
     expect(fetchFn).toHaveBeenCalledTimes(1)
+  })
+
+  it("asks the button's TonTuyau, by its id, where a video stands (0.3.0)", async () => {
+    const home = { id: 'a1', name: 'Home', url: 'https://tontuyau.example.net', apiKey: 'tt_k7Qm0042' }
+    const lucas = { id: 'b2', name: '', url: 'https://tube.lucas.example', apiKey: 'tt_Pq8s' }
+    const fake = fakeExt({ settings: { instances: [home, lucas], everyMinutes: 30 } })
+    const fetchFn = vi.fn(async () => new Response(JSON.stringify({ state: 'inTonTuyau', runId: null })))
+    startBackground(fake.ext, fetchFn)
+
+    const answer = await fake.send({ type: 'state', instance: 'b2', page: { kind: 'video', id: 'k3Fq8xZ0aQw' } })
+
+    expect(answer).toEqual({ ok: true, item: { state: 'inTonTuyau', runId: null } })
+    expect(fetchFn).toHaveBeenCalledWith(
+      'https://tube.lucas.example/api/extension/videos/k3Fq8xZ0aQw',
+      expect.objectContaining({ method: 'GET' }),
+    )
+    expect(await fake.send({ type: 'add', instance: 'gone', page: { kind: 'video', id: 'k3Fq8xZ0aQw' } })).toEqual({
+      ok: false,
+      detail: "This TonTuyau is no longer in LaPompe's settings.",
+    })
   })
 
   it('leaves other messages alone', () => {

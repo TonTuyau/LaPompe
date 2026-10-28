@@ -103,7 +103,7 @@ export function fakeExt(initial: Record<string, unknown> = {}): FakeExt {
       getManifest: () => ({ version: '0.1.0' }),
     },
     cookies: { getAll: async () => structuredClone(cookies) },
-    permissions: { request: vi.fn(async () => true) },
+    permissions: { request: vi.fn(async () => true), remove: vi.fn(async () => true) },
     i18n: { getMessage: message, getUILanguage: () => 'en' },
   }
   Object.assign(ext.runtime, {

@@ -11,15 +11,6 @@
   "settings": {
     "message": "Settings"
   },
-  "popupTonTuyau": {
-    "message": "TonTuyau"
-  },
-  "popupAs": {
-    "message": "As"
-  },
-  "popupCookie": {
-    "message": "Cookie"
-  },
   "popupNext": {
     "message": "Next"
   },
@@ -31,9 +22,6 @@
   },
   "cookieUnchecked": {
     "message": "Not checked"
-  },
-  "sentAgo": {
-    "message": "sent $1"
   },
   "neverSent": {
     "message": "never sent"
@@ -51,7 +39,7 @@
     "message": "Only the youtube.com cookies are sent. TonTuyau checks them at once by reading your Liked videos."
   },
   "notSetUp": {
-    "message": "Not set up yet: give it your TonTuyau's address and a browser-extension API key."
+    "message": "Not set up yet: give it a TonTuyau's address and a browser-extension API key."
   },
   "openSettings": {
     "message": "Open the settings"
@@ -87,7 +75,7 @@
     "message": "LaPompe settings"
   },
   "urlLabel": {
-    "message": "TonTuyau's address"
+    "message": "Address"
   },
   "urlHint": {
     "message": "The address you open TonTuyau at. The browser asks once to let LaPompe reach it."
@@ -96,7 +84,7 @@
     "message": "API key"
   },
   "keyHint": {
-    "message": "Made in TonTuyau: Admin → API keys → New key, kind \"Browser extension\". Shown once there: paste it here."
+    "message": "Made in that TonTuyau: Admin → API keys → New key, kind \"Browser extension\". Shown once there: paste it here."
   },
   "everyLabel": {
     "message": "Send the YouTube cookie every"
@@ -105,7 +93,7 @@
     "message": "minutes"
   },
   "everyHint": {
-    "message": "$1 or more. YouTube renews its cookies while you browse: a short interval keeps TonTuyau's copy working."
+    "message": "$1 or more, to each TonTuyau above, on one alarm. YouTube renews its cookies while you browse: a short interval keeps TonTuyau's copy working."
   },
   "save": {
     "message": "Save"
@@ -141,7 +129,7 @@
     "message": "A whole number, $1 or more."
   },
   "optionsNote": {
-    "message": "Saving asks the browser for leave to reach that address only (no other site), and youtube.com for its cookie. The key stays in the browser's extension storage, never in a web page."
+    "message": "Saving asks the browser for leave to reach those addresses only (no other site), and youtube.com for its cookie; a TonTuyau removed gives its leave back. The keys stay in the browser's extension storage, never in a web page."
   },
   "addVideo": {
     "message": "Add to TonTuyau"
@@ -178,5 +166,86 @@
   },
   "channelIdUnknown": {
     "message": "YouTube's page didn't say which channel this is."
+  },
+  "instancesTitle": {
+    "message": "Your TonTuyau"
+  },
+  "instancesOne": {
+    "message": "1 instance"
+  },
+  "instancesMany": {
+    "message": "$1 instances"
+  },
+  "newInstance": {
+    "message": "New TonTuyau"
+  },
+  "versionShort": {
+    "message": "TonTuyau $1"
+  },
+  "nameLabel": {
+    "message": "Name"
+  },
+  "optional": {
+    "message": "(optional)"
+  },
+  "namePlaceholder": {
+    "message": "Home, Lucas…"
+  },
+  "remove": {
+    "message": "Remove"
+  },
+  "addInstance": {
+    "message": "Add a TonTuyau"
+  },
+  "cookieToEvery": {
+    "message": "Your YouTube cookie goes to every TonTuyau listed here."
+  },
+  "cookieToEveryHint": {
+    "message": "It's your signed-in YouTube session: add only TonTuyau whose owner you'd trust with it."
+  },
+  "urlTwice": {
+    "message": "This TonTuyau is already in the list."
+  },
+  "permissionRefusedAll": {
+    "message": "Without your leave, LaPompe can't reach these addresses: nothing was saved."
+  },
+  "cookieNotSent": {
+    "message": "Not sent"
+  },
+  "popupSent": {
+    "message": "Sent"
+  },
+  "sentToSome": {
+    "message": "to $1 of $2"
+  },
+  "sendNowAll": {
+    "message": "Send the cookie now, to all"
+  },
+  "videoInSome": {
+    "message": "In $1 of $2 TonTuyau"
+  },
+  "channelInSome": {
+    "message": "Subscribed in $1 of $2 TonTuyau"
+  },
+  "menuTitleVideo": {
+    "message": "This video in your TonTuyau"
+  },
+  "menuTitleChannel": {
+    "message": "This channel in your TonTuyau"
+  },
+  "menuAdd": {
+    "message": "Add"
+  },
+  "menuWaiting": {
+    "message": "Waiting"
+  },
+  "menuSubscribed": {
+    "message": "Subscribed"
+  },
+  "addNoneCan": {
+    "message": "None of your TonTuyau can add yet: test their connection in LaPompe's settings (2.0 or later can)."
+  },
+  "addGone": {
+    "message": "This TonTuyau is no longer in LaPompe's settings."
   }
 }
